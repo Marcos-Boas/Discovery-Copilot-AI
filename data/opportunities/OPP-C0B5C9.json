@@ -1,0 +1,144 @@
+{
+  "version": "1.0",
+  "context_version": 1,
+  "opportunity": {
+    "id": "OPP-C0B5C9",
+    "title": "Solução em nuvem para hospedagem de site",
+    "source": "Manual Upload",
+    "created_at": "2024-07-30T10:00:00Z",
+    "status": "Inicial"
+  },
+  "customer": {
+    "name": "Cliente Não Identificado",
+    "segment": null,
+    "contact_person": null
+  },
+  "stakeholders": [],
+  "business_context": {
+    "problems": [
+      "Site sem hospedagem",
+      "Necessidade de infraestrutura para colocar o site online"
+    ],
+    "objectives": [
+      "Hospedar o site em uma solução em nuvem"
+    ],
+    "motivations": [
+      "Colocar o site online e acessível"
+    ]
+  },
+  "current_scenario": {
+    "description": "O cliente expressou o desejo de ter seu site hospedado em uma solução em nuvem, indicando que atualmente não possui essa infraestrutura.",
+    "key_points": [
+      "Site sem hospedagem",
+      "Busca por solução em nuvem"
+    ]
+  },
+  "desired_scenario": {
+    "description": "O cliente deseja ter seu site funcionando e acessível através de uma solução de hospedagem em nuvem.",
+    "key_points": [
+      "Site hospedado em nuvem",
+      "Disponibilidade online do site"
+    ]
+  },
+  "scope": {
+    "included": [
+      "Hospedagem de site em nuvem"
+    ],
+    "excluded": []
+  },
+  "technologies": [
+    "Cloud Computing"
+  ],
+  "constraints": [],
+  "assumptions": [],
+  "risks": [],
+  "missing_information": [
+    {
+      "id": "GAP-01",
+      "description": "Nome e detalhes de contato do cliente",
+      "area": "Comercial",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-02",
+      "description": "Detalhes técnicos do site (tecnologia, tamanho, tráfego esperado)",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Orçamento disponível para a solução de hospedagem",
+      "area": "Comercial",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-04",
+      "description": "Prazo desejado para a implementação da solução",
+      "area": "Comercial",
+      "priority": "Média"
+    }
+  ],
+  "questions": [
+    {
+      "id": "QST-01",
+      "question": "Qual o nome da sua empresa ou o seu nome completo?",
+      "type": "Obrigatória",
+      "target_role": "Cliente",
+      "context": "Para identificar o cliente e formalizar a oportunidade."
+    },
+    {
+      "id": "QST-02",
+      "question": "Você já possui o site desenvolvido? Qual a tecnologia utilizada (ex: WordPress, React, HTML estático, etc.)?",
+      "type": "Técnica",
+      "target_role": "Cliente",
+      "context": "Para entender os requisitos técnicos e compatibilidade da hospedagem."
+    },
+    {
+      "id": "QST-03",
+      "question": "Qual o volume de tráfego esperado para o site (número de visitantes, acessos simultâneos)?",
+      "type": "Técnica",
+      "target_role": "Cliente",
+      "context": "Para dimensionar a infraestrutura de nuvem necessária e garantir performance."
+    },
+    {
+      "id": "QST-04",
+      "question": "Existe alguma preferência por provedor de nuvem (AWS, Azure, Google Cloud, etc.) ou alguma restrição?",
+      "type": "Técnica",
+      "target_role": "Cliente",
+      "context": "Para direcionar a proposta para a plataforma mais adequada ou preferida."
+    },
+    {
+      "id": "QST-05",
+      "question": "Qual o prazo ideal para ter o site online e funcionando?",
+      "type": "Comercial",
+      "target_role": "Cliente",
+      "context": "Para alinhar expectativas e planejar a execução do projeto."
+    }
+  ],
+  "executive_summary": "O cliente expressou a necessidade de uma solução em nuvem para hospedar seu site, buscando colocá-lo online. A oportunidade está em fase inicial, com poucas informações detalhadas. É crucial coletar dados sobre o cliente, os requisitos técnicos do site e as expectativas de prazo/orçamento para dimensionar a solução e elaborar uma proposta adequada.",
+  "discovery_plan": {
+    "steps": [
+      "Entrar em contato com o cliente para coletar informações básicas (nome, contato).",
+      "Agendar uma reunião de discovery para aprofundar os requisitos técnicos do site.",
+      "Discutir expectativas de tráfego, orçamento e prazos.",
+      "Apresentar opções de soluções em nuvem baseadas nas informações coletadas."
+    ],
+    "methodology": "Reunião de levantamento de requisitos e alinhamento de expectativas.",
+    "validation_metrics": [
+      "Confirmação do nome do cliente e contato principal.",
+      "Especificação da tecnologia e requisitos do site.",
+      "Estimativa de tráfego e volume de dados.",
+      "Definição de provedor de nuvem preferencial (se houver)."
+    ]
+  },
+  "references": [],
+  "history": [
+    {
+      "version": 1,
+      "date": "2026-07-07T02:40:28.587943",
+      "author": "IA Copilot",
+      "changes_summary": "Leitura e interpretação inicial de oportunidade a partir do documento bruto."
+    }
+  ],
+  "confidence_level": "Baixo"
+}

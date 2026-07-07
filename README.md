@@ -13,7 +13,30 @@ A pasta `onion-mini` contém:
   1. `business-context-lite.md` — Contexto de Negócio (o que construir)
   2. `technical-context-lite.md` — Contexto Técnico (como construir)
   3. `onion-cycles.md` — Etapas e regras de todos os Ciclos de Desenvolvimento (Produto, Engenharia, KB e Sync) consolidadas em arquivo único para respeitar os limites de arquivos de contas gratuitas de IA.
-- **`docs/knowledge-base/`**: Pasta para armazenar Knowledge Bases temáticas criadas pelo `@meta`.
+- **`docs/knowledge-base/`**: Pasta para armazenar Knowledge Bases temáticas criadas pelo `@meta` (criada sob demanda; a KB operacional do Copilot vive em `data/knowledge/knowledge.db`).
+- **`backend/` + `site/copilot/` + `start.ps1`**: Aplicação **Discovery Copilot AI** (MVP) — API FastAPI + SPA Vanilla JS.
+
+---
+
+## Discovery Copilot AI — Executar localmente
+
+```powershell
+cd onion-mini
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r backend\requirements.txt
+# Crie .env com: GEMINI_API_KEY=sua-chave-aqui
+.\start.ps1              # http://127.0.0.1:8000/site/copilot/
+.\start.ps1 -Reload      # hot reload
+```
+
+| URL | Descrição |
+|---|---|
+| `/site/copilot/` | Interface do analista |
+| `/docs` | Swagger UI da API |
+| `/api/opportunities` | CRUD de oportunidades (JSON) |
+
+Teste de integração (servidor deve estar rodando): `python backend/tests/test_e2e.py`
 
 ---
 

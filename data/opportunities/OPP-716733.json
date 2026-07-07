@@ -1,0 +1,275 @@
+{
+  "version": "1.0",
+  "context_version": 3,
+  "opportunity": {
+    "id": "OPP-716733",
+    "title": "Oportunidade de Segurança de Acessos Remotos e Postura de Segurança para Hospital Vida Plena",
+    "source": "Exemplo Clear it ",
+    "created_at": "2023-10-27T10:00:00Z",
+    "status": "Validado"
+  },
+  "customer": {
+    "name": "Vida Plena",
+    "segment": "Hospital",
+    "contact_person": "Fernanda Lopes - Coordenadora de TI"
+  },
+  "stakeholders": [
+    {
+      "name": "Fernanda Lopes",
+      "role": "Coordenadora de TI",
+      "contact": null
+    }
+  ],
+  "business_context": {
+    "problems": [
+      "Preocupação com a segurança dos acessos remotos",
+      "Necessidade de evolução da postura de segurança recomendada por auditoria",
+      "Maior proteção contra ataques modernos"
+    ],
+    "objectives": [
+      "Evoluir a postura de segurança",
+      "Aumentar a proteção contra ataques modernos"
+    ],
+    "motivations": [
+      "Ampliação de duas unidades do hospital",
+      "Recomendação de auditoria para evolução da segurança"
+    ]
+  },
+  "current_scenario": {
+    "description": "O Hospital Vida Plena está em processo de ampliação de duas unidades. Atualmente, os médicos acessam os sistemas através de VPN tradicional e as estações de trabalho utilizam apenas Microsoft Defender para segurança. Uma auditoria recente recomendou a evolução da postura de segurança.",
+    "key_points": [
+      "Ampliação de duas unidades",
+      "Acessos remotos via VPN tradicional",
+      "Estações de trabalho com Microsoft Defender apenas",
+      "Auditoria recomendou evolução da postura de segurança"
+    ]
+  },
+  "desired_scenario": {
+    "description": "O cliente busca uma evolução na postura de segurança, especialmente para os acessos remotos, e maior proteção contra ataques modernos, conforme as recomendações da auditoria.",
+    "key_points": [
+      "Melhorar a segurança dos acessos remotos",
+      "Evoluir a postura de segurança geral",
+      "Obter maior proteção contra ataques modernos"
+    ]
+  },
+  "scope": {
+    "included": [
+      "Segurança de acessos remotos",
+      "Evolução da postura de segurança"
+    ],
+    "excluded": []
+  },
+  "technologies": [
+    "Microsoft Defender",
+    "VPN SSL",
+    "Zero Trust Network Access (ZTNA)",
+    "Multi-Factor Authentication (MFA)",
+    "Endpoint Detection and Response (EDR)",
+    "Extended Detection and Response (XDR)",
+    "Identity and Access Management (IAM)"
+  ],
+  "constraints": [],
+  "assumptions": [
+    {
+      "id": "ASM-01",
+      "description": "O Hospital Vida Plena está aberto a investir em tecnologias de segurança mais avançadas (ex: ZTNA, EDR/XDR) para além das soluções atuais.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-02",
+      "description": "Existe um orçamento alocado ou flexibilidade para alocar recursos para este projeto de segurança, considerando a ampliação das unidades e as recomendações da auditoria.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-03",
+      "description": "A equipe de TI do cliente possui capacidade ou está disposta a receber treinamento para gerenciar novas soluções de segurança, ou há interesse em serviços gerenciados.",
+      "impact": "Médio"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RSK-01",
+      "description": "Complexidade de integração de novas soluções de segurança com a infraestrutura hospitalar existente e sistemas legados.",
+      "category": "Técnico",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Mapear sistemas críticos e requisitos de integração no discovery para propor uma solução compatível e um plano de implementação faseado."
+    },
+    {
+      "id": "RSK-02",
+      "description": "Orçamento insuficiente para cobrir as recomendações da auditoria e as soluções de segurança modernas necessárias.",
+      "category": "Comercial",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Qualificar o orçamento disponível e o valor de negócio esperado no discovery para alinhar a proposta à capacidade de investimento do cliente."
+    },
+    {
+      "id": "RSK-03",
+      "description": "Interrupção de serviços críticos hospitalares durante a implementação de novas soluções de segurança.",
+      "category": "Operacional",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Planejar fases de implementação e janelas de manutenção com o cliente, priorizando a continuidade dos serviços e minimizando o impacto operacional."
+    },
+    {
+      "id": "RSK-04",
+      "description": "Falha em atender integralmente às recomendações da auditoria, resultando em não conformidade ou vulnerabilidades persistentes.",
+      "category": "Negócio",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Entender profundamente as recomendações da auditoria e alinhar a solução proposta para garantir a conformidade e a eficácia da segurança."
+    }
+  ],
+  "missing_information": [
+    {
+      "id": "GAP-01",
+      "description": "Detalhes específicos das recomendações da auditoria de segurança.",
+      "area": "Contexto",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-02",
+      "description": "Volume de acessos remotos e número de usuários impactados.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Arquitetura de rede atual e sistemas acessados remotamente.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-04",
+      "description": "Orçamento e cronograma previstos para o projeto de segurança.",
+      "area": "Comercial",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-05",
+      "description": "Requisitos de conformidade regulatória específicos para o setor hospitalar (LGPD, HIPAA, etc.) que impactam a segurança.",
+      "area": "Negócio",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-06",
+      "description": "Existência de outras soluções de identidade e acesso (IAM) ou MFA já implementadas ou em avaliação.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-07",
+      "description": "Processos atuais de resposta a incidentes de segurança e maturidade da equipe de segurança.",
+      "area": "Operacional",
+      "priority": "Média"
+    }
+  ],
+  "questions": [
+    {
+      "id": "QST-01",
+      "question": "Quais foram os principais achados e recomendações da auditoria de segurança?",
+      "type": "Obrigatória",
+      "target_role": "Coordenadora de TI",
+      "context": "Entender a profundidade da preocupação e os requisitos específicos."
+    },
+    {
+      "id": "QST-02",
+      "question": "Qual o volume de médicos e outros profissionais que utilizam o acesso remoto e quais sistemas são acessados?",
+      "type": "Técnica",
+      "target_role": "Coordenadora de TI",
+      "context": "Dimensionar a solução de segurança de acesso."
+    },
+    {
+      "id": "QST-03",
+      "question": "Existe alguma tecnologia de segurança de acesso ou identidade (ex: MFA, ZTNA) já em avaliação ou utilizada em outras áreas?",
+      "type": "Técnica",
+      "target_role": "Coordenadora de TI",
+      "context": "Identificar compatibilidade e oportunidades de integração."
+    },
+    {
+      "id": "QST-04",
+      "question": "Qual o prazo estimado para a implementação das melhorias de segurança, especialmente considerando a ampliação das novas unidades?",
+      "type": "Comercial",
+      "target_role": "Coordenadora de TI",
+      "context": "Entender a urgência e planejar a proposta."
+    },
+    {
+      "id": "QST-05",
+      "question": "Além das recomendações da auditoria, existem requisitos de conformidade regulatória (ex: LGPD, HIPAA) que precisam ser atendidos por esta solução de segurança?",
+      "type": "Obrigatória",
+      "target_role": "Coordenadora de TI",
+      "context": "Garantir que a solução proposta atenda a todas as exigências legais e setoriais do ambiente hospitalar."
+    },
+    {
+      "id": "QST-06",
+      "question": "Como é feito o gerenciamento de identidades e acessos atualmente para os usuários remotos e internos? Há alguma solução de MFA ou IAM já em uso?",
+      "type": "Técnica",
+      "target_role": "Coordenadora de TI",
+      "context": "Entender a base para uma solução de Zero Trust e identificar oportunidades de integração ou otimização de ferramentas existentes."
+    },
+    {
+      "id": "QST-07",
+      "question": "Qual o processo atual de resposta a incidentes de segurança? A equipe de TI possui recursos dedicados ou parceiros para essa função?",
+      "type": "Contexto",
+      "target_role": "Coordenadora de TI",
+      "context": "Avaliar a maturidade de segurança do cliente e identificar oportunidades de melhoria integrada com as novas soluções."
+    },
+    {
+      "id": "QST-08",
+      "question": "Quem são os principais tomadores de decisão para este projeto de segurança e qual o processo de aprovação?",
+      "type": "Comercial",
+      "target_role": "Coordenadora de TI",
+      "context": "Entender o ciclo de vendas e os stakeholders chave para alinhar a comunicação e a proposta."
+    }
+  ],
+  "executive_summary": "O Hospital Vida Plena, em um momento estratégico de ampliação de duas unidades, busca urgentemente fortalecer sua postura de segurança cibernética. Impulsionado por uma auditoria recente que recomendou a evolução da segurança e pela necessidade de maior proteção contra ataques modernos, o cliente expressa preocupação com a segurança dos acessos remotos, atualmente baseados em VPN tradicional, e a proteção das estações de trabalho, que contam apenas com Microsoft Defender. A oportunidade visa endereçar essas dores, buscando soluções que garantam acessos remotos seguros e uma defesa robusta contra ameaças avançadas, alinhando-se às melhores práticas e requisitos regulatórios do setor hospitalar. A próxima etapa é uma reunião de discovery aprofundada para detalhar requisitos, mapear a infraestrutura e apresentar soluções alinhadas aos objetivos do Hospital Vida Plena.",
+  "discovery_plan": {
+    "steps": [
+      "Apresentação e alinhamento da agenda da reunião, reforçando o objetivo de co-criação da solução.",
+      "Aprofundar nos detalhes e prioridades das recomendações da auditoria de segurança e requisitos regulatórios específicos do setor hospitalar.",
+      "Mapear a arquitetura atual de acessos remotos, sistemas críticos e soluções de identidade/endpoint existentes.",
+      "Discutir o volume de usuários remotos, tipos de dispositivos e perfis de acesso.",
+      "Explorar os desafios operacionais e a maturidade da equipe de TI em relação à segurança e resposta a incidentes.",
+      "Apresentar um overview de abordagens modernas para segurança de acessos (ex: Zero Trust Network Access) e proteção de endpoints (ex: EDR/XDR).",
+      "Discutir expectativas de orçamento e cronograma para o projeto, bem como o processo de tomada de decisão.",
+      "Definir próximos passos claros, incluindo a elaboração de uma proposta de solução e agendamento de reuniões técnicas específicas, se necessário."
+    ],
+    "methodology": "Reunião de Discovery Estratégico e Técnico, com foco em levantamento detalhado de requisitos, validação de premissas e exploração de soluções modernas. A dinâmica será interativa, com perguntas abertas e discussões sobre cenários de uso e desafios atuais do cliente.",
+    "validation_metrics": [
+      "Validação das recomendações da auditoria e identificação de requisitos de conformidade regulatória.",
+      "Mapeamento completo da arquitetura de acessos remotos e soluções de segurança existentes.",
+      "Entendimento claro do orçamento e cronograma esperados pelo cliente.",
+      "Acordo sobre as tecnologias e abordagens mais adequadas para o cenário do cliente.",
+      "Definição dos próximos passos para a elaboração de uma proposta de valor e identificação dos tomadores de decisão."
+    ]
+  },
+  "references": [
+    {
+      "id": "REF-01",
+      "type": "Briefing Comercial",
+      "source": "Texto Bruto de Entrada",
+      "timestamp": "2023-10-27T10:00:00Z"
+    }
+  ],
+  "history": [
+    {
+      "version": 1,
+      "date": "2026-07-07T02:45:30.042134",
+      "author": "IA Copilot",
+      "changes_summary": "Leitura e interpretação inicial de oportunidade a partir do documento bruto."
+    },
+    {
+      "version": 2,
+      "date": "2026-07-07T02:49:53.487879",
+      "author": "IA Copilot",
+      "changes_summary": "Enriquecimento inteligente executado. Análise de lacunas, perguntas de discovery, riscos e premissas gerados com suporte da Knowledge Base."
+    },
+    {
+      "version": 3,
+      "date": "2026-07-07T02:54:54.066576",
+      "author": "Analista (Validação)",
+      "changes_summary": "Canonical Brief validado e corrigido manualmente pelo Analista de Pré-Vendas."
+    }
+  ],
+  "confidence_level": "Médio"
+}

@@ -1,0 +1,9 @@
+backend/requirements.txt
+backend/models.py
+backend/services/ai.py
+backend/services/kb.py
+backend/main.py
+site/copilot/index.html
+site/copilot/style.css
+site/copilot/app.js
+docs/technical-context-lite.md

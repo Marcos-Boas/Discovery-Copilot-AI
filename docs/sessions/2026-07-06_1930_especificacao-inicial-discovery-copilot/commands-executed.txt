@@ -1,0 +1,2 @@
+git status
+git diff docs/business-context-lite.md

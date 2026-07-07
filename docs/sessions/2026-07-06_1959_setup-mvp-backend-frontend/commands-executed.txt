@@ -1,0 +1,5 @@
+python -m venv .venv
+.venv\Scripts\pip install -r backend/requirements.txt
+.venv\Scripts\python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+Invoke-RestMethod -Uri http://127.0.0.1:8000/api/kb
+Invoke-WebRequest -Uri http://127.0.0.1:8000/site/copilot/index.html

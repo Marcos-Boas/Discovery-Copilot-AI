@@ -1,0 +1,11 @@
+docs/technical-context-lite.md
+docs/product/traceability.md
+README.md
+docs/sessions/README.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/README.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/context.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/decisions.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/changes.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/notes.md
+docs/sessions/2026-07-06_2328_sync-codigo-docs/files-changed.txt
+docs/sessions/2026-07-06_2328_sync-codigo-docs/commands-executed.txt

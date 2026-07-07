@@ -1,0 +1,443 @@
+/* style.css · Discovery Copilot UI · Onion Mini Design System */
+
+:root {
+  --bg:            #FAF7F2;
+  --bg-card:       #FFFFFF;
+  --bg-glass:      rgba(28,22,18,0.024);
+  --orange:        #C2410C;
+  --orange-light:  #EA580C;
+  --orange-dim:    rgba(194,65,12,0.09);
+  --orange-glow:   rgba(194,65,12,0.15);
+  --purple:        #7C3AED;
+  --purple-light:  #8B5CF6;
+  --purple-dim:    rgba(124,58,237,0.08);
+  --purple-glow:   rgba(124,58,237,0.20);
+  --text:          #1C1612;
+  --text-body:     #3D3530;
+  --text-muted:    #7A726A;
+  --text-dim:      #C4BDB6;
+  --border:        rgba(28,22,18,0.09);
+  --border-warm:   rgba(194,65,12,0.18);
+  --radius:        10px;
+  --shadow:        0 4px 20px rgba(28, 22, 18, 0.04);
+  --shadow-active: 0 10px 30px rgba(194, 65, 12, 0.08);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sans {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.mono {
+  font-family: 'SFMono-Regular', 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+header {
+  padding: 1rem 2rem;
+  background: rgba(250, 247, 242, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+}
+
+.logo span {
+  color: var(--orange);
+}
+
+.subtitle {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: -2px;
+}
+
+/* Layout principal */
+.app-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 65px);
+}
+
+/* Barra Lateral */
+.sidebar {
+  background: rgba(28, 22, 18, 0.012);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: flex-col;
+  gap: 1.5rem;
+}
+
+.sidebar h3 {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* Oportunidades List */
+.opp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.opp-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.015);
+}
+
+.opp-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--orange-glow);
+  box-shadow: var(--shadow);
+}
+
+.opp-item.active {
+  border-color: var(--orange);
+  background: var(--orange-dim);
+  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.06);
+}
+
+.opp-item h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.opp-item p {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-body);
+  margin-bottom: 0.4rem;
+}
+
+.opp-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.status-badge {
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.03em;
+}
+
+.status-inicial { background: #E2E8F0; color: #475569; }
+.status-enriquecido { background: var(--purple-dim); color: var(--purple); }
+.status-validado { background: #DEF7EC; color: #03543F; }
+
+/* Botões */
+.btn {
+  font-family: -apple-system, sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.18s ease;
+  width: 100%;
+}
+
+.btn-primary {
+  background: var(--orange);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px var(--orange-glow);
+}
+
+.btn-primary:hover {
+  background: var(--orange-light);
+  box-shadow: 0 6px 16px rgba(194, 65, 12, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-body);
+}
+
+.btn-secondary:hover {
+  background: rgba(28,22,18,0.03);
+  border-color: var(--text-muted);
+}
+
+/* Área de Conteúdo Principal */
+.main-content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.content-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(250,247,242,0.4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content-header h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.action-bar {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Editor Grid */
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  overflow: hidden;
+}
+
+.workspace-panel {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.inspector-panel {
+  border-left: 1px solid var(--border);
+  background: rgba(28, 22, 18, 0.008);
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards & Seções */
+.section-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.section-card h3 {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--orange);
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.card-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Formulários */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-body);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-family: -apple-system, sans-serif;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: #FFFFFF;
+  transition: border-color 0.15s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 2px var(--orange-glow);
+}
+
+textarea.form-control {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Listas customizadas e chips */
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  color: var(--text-body);
+}
+
+.bullet-list {
+  padding-left: 1.25rem;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-body);
+}
+
+.bullet-list li {
+  margin-bottom: 0.4rem;
+}
+
+/* Inspector Widgets */
+.inspector-widget {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+}
+
+.inspector-widget h4 {
+  font-family: -apple-system, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Upload Modal ou Bloco */
+.upload-area {
+  border: 2px dashed var(--border-warm);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(194, 65, 12, 0.015);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.upload-area:hover {
+  background: var(--orange-dim);
+  border-color: var(--orange);
+}
+
+/* Chat e Consultas */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  color: var(--text-muted);
+  padding: 3rem;
+}
+
+.empty-state h3 {
+  font-size: 1.6rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(250, 247, 242, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  border-radius: var(--radius);
+  font-weight: bold;
+  color: var(--orange);
+  font-family: -apple-system, sans-serif;
+}

@@ -1,0 +1,12 @@
+docs/business-context-lite.md
+docs/product/ai-behavior.md
+docs/product/business-rules.md
+docs/product/canonical-brief.md
+docs/product/domain-model.md
+docs/product/knowledge-base.md
+docs/product/non-functional-requirements.md
+docs/product/process.md
+docs/product/product-glossary.md
+docs/product/requirements-catalog.md
+docs/product/specification.md
+docs/product/traceability.md

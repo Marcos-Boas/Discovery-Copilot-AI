@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Discovery Copilot AI — Painel do Analista</title>
+  <!-- Carrega as fontes locais do Onion Mini herdadas do site principal -->
+  <link rel="stylesheet" href="../index.html" style="display:none;"> <!-- Apenas para mapear caminhos se necessário, mas importamos o CSS abaixo -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    @font-face { font-family:'Fraunces'; src:url('../fonts/fraunces-var.woff2') format('woff2'); font-weight:300 900; font-style:normal; font-display:swap; }
+  </style>
+</head>
+<body>
+
+  <!-- Header Geral -->
+  <header>
+    <div class="logo">
+      DISCOVERY <span>COPILOT AI</span>
+      <div class="subtitle">Onion Mini Copilot v2.0</div>
+    </div>
+    <div class="sans" style="font-size: 0.85rem; color: var(--text-muted);">
+      Status da API: <span id="api-status" style="font-weight: bold; color: #DC2626;">Desconectado</span>
+    </div>
+  </header>
+
+  <!-- Container de Layout -->
+  <div class="app-container">
+    
+    <!-- Barra Lateral de Oportunidades -->
+    <aside class="sidebar">
+      <div>
+        <h3>Nova Oportunidade</h3>
+        <div class="upload-area sans" id="btn-show-upload">
+          <strong>+ Importar Briefing</strong>
+          <p style="font-size: 0.75rem; margin-top: 0.25rem;">Cole o e-mail ou documento comercial bruto</p>
+        </div>
+      </div>
+      
+      <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; margin-top: 1rem;">
+        <h3>Oportunidades Ativas</h3>
+        <div class="opp-list" id="opportunity-list" style="overflow-y: auto; flex: 1;">
+          <!-- Itens carregados dinamicamente via JS -->
+          <div class="sans" style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 2rem;">
+            Nenhuma oportunidade carregada.
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Área Principal de Edição/Visualização -->
+    <main class="main-content">
+      
+      <!-- Cabeçalho do Conteúdo (Apenas exibido se houver oportunidade selecionada) -->
+      <div class="content-header" id="workspace-header" style="display: none;">
+        <div>
+          <h2 id="opp-display-title">Oportunidade</h2>
+          <p class="sans" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Cliente: <strong id="opp-display-customer" style="color: var(--text);">Carregando...</strong> | 
+            Versão: <strong id="opp-display-version" class="mono">v0</strong>
+          </p>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-secondary" id="btn-enrich">
+            ✨ Enriquecer com IA & KB
+          </button>
+          <button class="btn btn-primary" id="btn-save">
+            💾 Salvar & Validar
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid Principal do Editor -->
+      <div class="editor-grid" id="workspace-body" style="display: none;">
+        
+        <!-- Painel Esquerdo: Formulários de Edição do Canonical Brief -->
+        <section class="workspace-panel" id="brief-editor-panel">
+          <form id="canonical-brief-form" onsubmit="event.preventDefault();">
+            
+            <!-- Bloco 1: Opportunity & Customer -->
+            <div class="section-card">
+              <h3>Identificação Geral</h3>
+              <div class="card-grid-2">
+                <div class="form-group">
+                  <label for="input-title">Título da Oportunidade</label>
+                  <input type="text" id="input-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="input-customer-name">Nome do Cliente</label>
+                  <input type="text" id="input-customer-name" class="form-control" required>
+                </div>
+              </div>
+              <div class="card-grid-2">
+                <div class="form-group">
+                  <label for="input-customer-segment">Segmento de Atuação</label>
+                  <input type="text" id="input-customer-segment" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="input-confidence-level">Nível de Confiança</label>
+                  <select id="input-confidence-level" class="form-control">
+                    <option value="Baixo">Baixo</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Alto">Alto</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 2: Contexto de Negócio e Cenários -->
+            <div class="section-card">
+              <h3>Contexto & Dores de Negócio</h3>
+              <div class="form-group">
+                <label for="input-business-problems">Problemas Identificados (Um por linha)</label>
+                <textarea id="input-business-problems" class="form-control" style="height: 90px;"></textarea>
+              </div>
+              <div class="card-grid-2">
+                <div class="form-group">
+                  <label for="input-current-scenario">Cenário Atual (As-Is)</label>
+                  <textarea id="input-current-scenario" class="form-control" style="height: 100px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="input-desired-scenario">Cenário Desejado (To-Be)</label>
+                  <textarea id="input-desired-scenario" class="form-control" style="height: 100px;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 3: Escopo & Tecnologias -->
+            <div class="section-card">
+              <h3>Escopo & Restrições Técnicas</h3>
+              <div class="card-grid-2">
+                <div class="form-group">
+                  <label for="input-scope-included">Escopo Incluso (Um por linha)</label>
+                  <textarea id="input-scope-included" class="form-control" style="height: 90px;"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="input-scope-excluded">Fora de Escopo / Exclusões (Um por linha)</label>
+                  <textarea id="input-scope-excluded" class="form-control" style="height: 90px;"></textarea>
+                </div>
+              </div>
+              <div class="card-grid-2">
+                <div class="form-group">
+                  <label for="input-technologies">Tecnologias Envolvidas (Separadas por vírgula)</label>
+                  <input type="text" id="input-technologies" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="input-constraints">Restrições / Limitações (Uma por linha)</label>
+                  <textarea id="input-constraints" class="form-control" style="height: 60px;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 4: Resumo Executivo (Gera via enriquecimento) -->
+            <div class="section-card">
+              <h3>Resumo Executivo Consolidado</h3>
+              <div class="form-group">
+                <textarea id="input-executive-summary" class="form-control" style="height: 120px;" placeholder="Gerado automaticamente pela IA após o Enriquecimento comercial..."></textarea>
+              </div>
+            </div>
+
+            <!-- Bloco 5: Gaps & Perguntas de Discovery -->
+            <div class="section-card">
+              <h3>Lacunas (Gaps) & Perguntas Geradas para Reunião</h3>
+              <div class="form-group">
+                <label>Gaps de Informação Detectados:</label>
+                <div id="display-gaps-container" style="margin-bottom: 1rem;">
+                  <!-- Injetado via JS -->
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Perguntas Sugeridas para Validação:</label>
+                <div id="display-questions-container">
+                  <!-- Injetado via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 6: Riscos e Premissas -->
+            <div class="section-card">
+              <h3>Análise de Riscos & Premissas</h3>
+              <div class="card-grid-2">
+                <div>
+                  <label for="display-risks-container" class="sans" style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Riscos Identificados:</label>
+                  <div id="display-risks-container"></div>
+                </div>
+                <div>
+                  <label for="display-assumptions-container" class="sans" style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Premissas Documentadas:</label>
+                  <div id="display-assumptions-container"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 7: Plano de Discovery -->
+            <div class="section-card">
+              <h3>Discovery Plan (Roteiro da Reunião)</h3>
+              <div class="form-group">
+                <label for="input-plan-methodology">Metodologia e Dinâmica</label>
+                <input type="text" id="input-plan-methodology" class="form-control">
+              </div>
+              <div class="form-group">
+                <label for="input-plan-steps">Passos Recomendados (Um por linha)</label>
+                <textarea id="input-plan-steps" class="form-control" style="height: 90px;"></textarea>
+              </div>
+            </div>
+
+          </form>
+        </section>
+
+        <!-- Painel Direito: Inspetor de Metadados, Histórico & Knowledge Base -->
+        <aside class="inspector-panel">
+          
+          <!-- Widget da KB local -->
+          <div class="inspector-widget">
+            <h4>
+              <span>Knowledge Base Oficial</span>
+            </h4>
+            <div class="form-group">
+              <input type="text" id="kb-search-input" class="form-control sans" style="font-size: 0.78rem;" placeholder="Pesquisar artigos de conhecimento...">
+            </div>
+            <div id="kb-results-container" style="max-height: 250px; overflow-y: auto; font-family: -apple-system, sans-serif; font-size: 0.78rem; display: flex; flex-direction: column; gap: 0.65rem;">
+              <!-- Artigos carregados dinamicamente -->
+            </div>
+          </div>
+
+          <!-- Widget de Histórico -->
+          <div class="inspector-widget">
+            <h4>Histórico do Contexto</h4>
+            <div id="history-container" style="max-height: 200px; overflow-y: auto; font-family: -apple-system, sans-serif; font-size: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <!-- Linhas de histórico -->
+            </div>
+          </div>
+
+          <!-- Widget de Status do Briefing -->
+          <div class="inspector-widget sans" style="font-size: 0.8rem;">
+            <h4>Metadados da Oportunidade</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-body);">
+              <div>Origem: <strong id="meta-source" style="color: var(--text);">CRM</strong></div>
+              <div>Criado em: <strong id="meta-created" style="color: var(--text);">-</strong></div>
+              <div>ID Único: <strong id="meta-id" class="mono" style="color: var(--text);">-</strong></div>
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+
+      <!-- Estado Vazio (Sem oportunidade carregada) -->
+      <div class="empty-state" id="empty-workspace">
+        <h3>Nenhuma Oportunidade Selecionada</h3>
+        <p class="sans" style="font-size: 0.95rem; margin-top: 0.25rem; max-width: 460px;">
+          Selecione uma oportunidade ativa na barra lateral esquerda ou faça a importação de um novo briefing de vendas.
+        </p>
+        <button class="btn btn-primary sans" id="btn-empty-import" style="margin-top: 1.5rem; max-width: 200px;">
+          + Importar Novo Briefing
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal/Área de Ingestão de Novo Briefing -->
+  <div id="upload-modal" style="display: none; position: fixed; inset: 0; background: rgba(28,22,18,0.5); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; padding: 2rem;">
+    <div style="background: #FFFFFF; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 600px; padding: 2rem; box-shadow: 0 10px 40px rgba(0,0,0,0.15);">
+      <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;">Importar Briefing Bruto</h3>
+      <p class="sans" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+        Cole abaixo o texto extraído do CRM comercial, e-mail do cliente, ata de reunião ou propostas comerciais. A inteligência do Copiloto fará a extração do Canonical Brief estruturado automaticamente.
+      </p>
+      
+      <form id="upload-form" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="upload-source">Origem do Briefing</label>
+          <input type="text" id="upload-source" class="form-control" value="Manual Upload" required placeholder="Ex: E-mail Comercial, CRM Opportunity 105, Ata de Alinhamento">
+        </div>
+        <div class="form-group">
+          <label for="upload-text">Conteúdo do Documento</label>
+          <textarea id="upload-text" class="form-control" style="height: 220px;" required placeholder="Cole aqui o texto bruto do documento..."></textarea>
+        </div>
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" id="btn-close-upload">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-upload">Processar Briefing ✨</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loader Overlay (Injetado dinamicamente no container necessário) -->
+  <div id="global-loader" style="display: none;">
+    <div class="loading-overlay">
+      <div style="text-align: center;">
+        <div style="font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 800;">Processando inteligência artificial...</div>
+        <div class="sans" style="font-size: 0.85rem; color: var(--text-muted);">Isso pode levar de 5 a 10 segundos</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

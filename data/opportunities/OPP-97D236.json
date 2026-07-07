@@ -1,0 +1,289 @@
+{
+  "version": "2.0.0",
+  "context_version": 2,
+  "opportunity": {
+    "id": "OPP-97D236",
+    "title": "Modernização do sistema de gestão de clientes para a Empresa XYZ",
+    "source": "test_e2e.py",
+    "created_at": "2024-07-10T12:00:00Z",
+    "status": "Enriquecido"
+  },
+  "customer": {
+    "name": "Empresa XYZ",
+    "segment": "Distribuidora de produtos industriais, manufatura e logística",
+    "contact_person": null
+  },
+  "stakeholders": [
+    {
+      "name": "CEO",
+      "role": "Decisor",
+      "contact": null
+    },
+    {
+      "name": "CTO",
+      "role": "Decisor",
+      "contact": null
+    }
+  ],
+  "business_context": {
+    "problems": [
+      "ERP legado desenvolvido internamente há 15 anos",
+      "Ausência de APIs no ERP",
+      "Falta de integração entre ERP e CRM",
+      "Problemas de performance do ERP em períodos de pico",
+      "Perda de produtividade do time de vendas devido a dados duplicados (2h/dia)"
+    ],
+    "objectives": [
+      "Integração ERP CRM em tempo real",
+      "Criação de portal de autoatendimento para clientes B2B",
+      "Geração de relatórios gerenciais consolidados",
+      "Migração para nuvem (preferencialmente Azure)"
+    ],
+    "motivations": [
+      "Melhorar a eficiência operacional e a produtividade do time de vendas",
+      "Oferecer melhor experiência ao cliente B2B através de autoatendimento",
+      "Obter insights de negócio através de relatórios gerenciais consolidados",
+      "Modernizar a infraestrutura para garantir escalabilidade e performance"
+    ]
+  },
+  "current_scenario": {
+    "description": "A Empresa XYZ, uma distribuidora de produtos industriais com 500 colaboradores, opera com um ERP legado de 15 anos, sem APIs e sem integração com o CRM. Este sistema apresenta sérios problemas de performance em picos, resultando em perda de produtividade para o time de vendas, que gasta cerca de 2 horas diárias preenchendo dados duplicados.",
+    "key_points": [
+      "ERP legado e desatualizado (15 anos)",
+      "Falta de integração entre sistemas (ERP e CRM)",
+      "Baixa performance do ERP em momentos críticos",
+      "Ineficiência operacional no time de vendas"
+    ]
+  },
+  "desired_scenario": {
+    "description": "A Empresa XYZ busca modernizar sua gestão de clientes através da integração em tempo real entre ERP e CRM, implementação de um portal de autoatendimento B2B, e a capacidade de gerar relatórios gerenciais consolidados. A migração para uma infraestrutura em nuvem, com preferência para Azure, é um objetivo chave para melhorar a performance e a escalabilidade.",
+    "key_points": [
+      "Integração em tempo real ERP-CRM",
+      "Portal de autoatendimento B2B",
+      "Relatórios gerenciais consolidados",
+      "Migração para nuvem (Azure)"
+    ]
+  },
+  "scope": {
+    "included": [
+      "Modernização do sistema de gestão de clientes",
+      "Integração ERP e CRM",
+      "Desenvolvimento de portal de autoatendimento B2B",
+      "Implementação de relatórios gerenciais",
+      "Migração para nuvem (Azure)"
+    ],
+    "excluded": [
+      "Substituição completa do ERP legado (a menos que seja identificado como inviável a integração)",
+      "Desenvolvimento de novas funcionalidades não relacionadas à gestão de clientes ou portal B2B"
+    ]
+  },
+  "technologies": [
+    "Azure (Cloud Computing)",
+    "CRM (Plataforma a ser definida)",
+    "API Gateway (para integração)",
+    "Ferramentas de ETL/Integração de Dados",
+    "Power BI ou similar (para relatórios gerenciais)"
+  ],
+  "constraints": [
+    "Orçamento estimado de R$ 800.000",
+    "Prazo desejado de 12 meses"
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-01",
+      "description": "O ERP legado possui capacidade de extração de dados e/ou pontos de integração que podem ser utilizados para a integração com o CRM e o portal B2B.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-02",
+      "description": "O orçamento de R$ 800.000 e o prazo de 12 meses são realistas e suficientes para o escopo proposto, considerando a complexidade da integração e migração.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-03",
+      "description": "A Empresa XYZ possui ou terá recursos internos (equipe de TI, especialistas de negócio) disponíveis para apoiar o projeto e validar entregas.",
+      "impact": "Médio"
+    },
+    {
+      "id": "ASM-04",
+      "description": "Os requisitos para o portal de autoatendimento B2B são compatíveis com soluções de mercado ou demandam desenvolvimento customizado de complexidade moderada.",
+      "impact": "Médio"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RSK-01",
+      "description": "Complexidade inesperada na integração com o ERP legado devido à ausência de APIs e documentação defasada.",
+      "category": "Técnico",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Realizar um levantamento técnico aprofundado do ERP, incluindo análise de código e banco de dados, antes da fase de execução. Considerar a criação de uma camada de abstração/API intermediária."
+    },
+    {
+      "id": "RSK-02",
+      "description": "Orçamento e/ou prazo insuficientes para cobrir o escopo completo da modernização e migração, levando a cortes de funcionalidades ou estouro de custos/prazos.",
+      "category": "Comercial",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Realizar uma estimativa detalhada com base nos requisitos levantados. Propor um plano de fases para o projeto, priorizando as funcionalidades de maior valor e permitindo ajustes de escopo/orçamento."
+    },
+    {
+      "id": "RSK-03",
+      "description": "Resistência à mudança por parte dos usuários finais (equipe de vendas, clientes B2B) na adoção dos novos sistemas e processos.",
+      "category": "Operacional",
+      "impact": "Médio",
+      "probability": "Média",
+      "mitigation": "Incluir um plano de gestão de mudança e treinamento desde o início do projeto. Envolver key-users no processo de design e validação das soluções."
+    },
+    {
+      "id": "RSK-04",
+      "description": "Falha na migração de dados do ERP legado para os novos sistemas, resultando em perda ou inconsistência de informações críticas.",
+      "category": "Técnico",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Definir uma estratégia robusta de migração de dados, incluindo mapeamento detalhado, testes exaustivos e validação com usuários de negócio. Considerar migração faseada."
+    }
+  ],
+  "missing_information": [
+    {
+      "id": "GAP-01",
+      "description": "Nome e contato do ponto de contato principal (contact_person) na Empresa XYZ para o projeto.",
+      "area": "Comercial",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-02",
+      "description": "Detalhes específicos sobre a arquitetura do ERP legado (linguagem, banco de dados, módulos, dependências).",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Requisitos detalhados para o portal de autoatendimento B2B (funcionalidades, integrações necessárias, volume de usuários esperado).",
+      "area": "Escopo",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-04",
+      "description": "Qual CRM está sendo utilizado atualmente e quais são as expectativas de integração (fluxos de dados, regras de negócio).",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-05",
+      "description": "Métricas de sucesso e KPIs específicos que a Empresa XYZ utilizará para medir o impacto da modernização.",
+      "area": "Negócio",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-06",
+      "description": "Disponibilidade de equipe interna da Empresa XYZ para participar do projeto (TI, usuários de negócio).",
+      "area": "Operacional",
+      "priority": "Média"
+    }
+  ],
+  "questions": [
+    {
+      "id": "QST-01",
+      "question": "Qual é o principal motivador estratégico para iniciar este projeto de modernização neste momento, além dos problemas operacionais já identificados?",
+      "type": "Obrigatória",
+      "target_role": "CEO",
+      "context": "Entender a visão de longo prazo e o alinhamento com os objetivos de negócio da empresa."
+    },
+    {
+      "id": "QST-02",
+      "question": "Poderiam detalhar a arquitetura atual do ERP legado, incluindo tecnologias, banco de dados, módulos principais e se existem APIs ou pontos de integração disponíveis?",
+      "type": "Técnica",
+      "target_role": "CTO",
+      "context": "Essencial para avaliar a viabilidade e complexidade da integração e migração."
+    },
+    {
+      "id": "QST-03",
+      "question": "Qual é a plataforma de CRM atualmente utilizada e quais são os principais fluxos de dados e regras de negócio que precisam ser integrados com o ERP?",
+      "type": "Técnica",
+      "target_role": "CTO",
+      "context": "Fundamental para desenhar a solução de integração e estimar o esforço."
+    },
+    {
+      "id": "QST-04",
+      "question": "Quais funcionalidades são prioritárias para o portal de autoatendimento B2B e qual o volume estimado de clientes que o utilizarão?",
+      "type": "Contexto",
+      "target_role": "CEO",
+      "context": "Definir o escopo inicial do portal e dimensionar a infraestrutura necessária."
+    },
+    {
+      "id": "QST-05",
+      "question": "Como o orçamento de R$ 800.000 e o prazo de 12 meses foram definidos? Existe alguma flexibilidade ou priorização caso o escopo inicial exceda esses limites?",
+      "type": "Comercial",
+      "target_role": "CEO",
+      "context": "Compreender as restrições e expectativas para alinhar a proposta de valor."
+    },
+    {
+      "id": "QST-06",
+      "question": "Quais são as métricas de sucesso e os KPIs que a Empresa XYZ utilizará para avaliar o êxito deste projeto de modernização?",
+      "type": "Complementar",
+      "target_role": "CEO",
+      "context": "Estabelecer critérios claros para o sucesso do projeto e medir o ROI."
+    },
+    {
+      "id": "QST-07",
+      "question": "Quem será o ponto de contato principal e o líder do projeto por parte da Empresa XYZ, e qual será o nível de envolvimento da equipe interna?",
+      "type": "Contexto",
+      "target_role": "CEO",
+      "context": "Identificar os stakeholders chave e garantir o alinhamento de recursos."
+    },
+    {
+      "id": "QST-08",
+      "question": "Existe alguma funcionalidade ou módulo do ERP atual que é considerado crítico e não pode ser descontinuado ou alterado drasticamente durante a modernização?",
+      "type": "Técnica",
+      "target_role": "CTO",
+      "context": "Identificar dependências e restrições técnicas importantes para o planejamento."
+    }
+  ],
+  "executive_summary": "A Empresa XYZ, uma distribuidora de produtos industriais com 500 colaboradores, busca modernizar sua gestão de clientes para superar desafios impostos por um ERP legado de 15 anos. Este sistema, sem APIs e integração com o CRM, causa perda significativa de produtividade no time de vendas e problemas de performance. Os objetivos incluem integração ERP-CRM em tempo real, um portal de autoatendimento B2B, relatórios gerenciais consolidados e migração para Azure, visando maior eficiência operacional, melhor experiência do cliente e escalabilidade. O projeto enfrenta restrições de um orçamento de R$ 800.000 e um prazo de 12 meses, com o CEO e CTO como principais decisores. A complexidade da integração com o ERP legado e a adequação do orçamento são riscos chave que precisam ser endereçados na fase de discovery.",
+  "discovery_plan": {
+    "steps": [
+      "1. Reunião de Kick-off e Alinhamento: Apresentação da equipe, objetivos do discovery e agenda.",
+      "2. Deep Dive em Problemas e Oportunidades: Sessão colaborativa para detalhar as dores, impactos e expectativas de valor com a modernização.",
+      "3. Mapeamento de Processos Chave: Entendimento dos fluxos de vendas, atendimento e gestão de clientes atuais e desejados.",
+      "4. Levantamento Técnico do ERP e CRM: Discussão aprofundada sobre a arquitetura, tecnologias, APIs e dados dos sistemas existentes.",
+      "5. Detalhamento de Requisitos do Portal B2B: Coleta de funcionalidades essenciais e expectativas de experiência do usuário para o portal.",
+      "6. Discussão de Estratégia de Migração para Azure: Entendimento das preferências, restrições e expectativas para a infraestrutura em nuvem.",
+      "7. Refinamento de Escopo e Priorização: Validação dos itens inclusos e discussão de possíveis exclusões ou fases futuras.",
+      "8. Alinhamento de Expectativas (Orçamento e Prazo): Discussão sobre a flexibilidade e o impacto das restrições atuais.",
+      "9. Próximos Passos e Plano de Ação: Definição das próximas etapas pós-discovery."
+    ],
+    "methodology": "Workshop de Discovery Colaborativo, com sessões focadas em negócio e tecnologia.",
+    "validation_metrics": [
+      "Escopo do projeto preliminarmente definido e validado com stakeholders.",
+      "Identificação clara dos principais desafios técnicos e de negócio.",
+      "Lista de requisitos funcionais e não funcionais iniciais para os sistemas.",
+      "Compreensão das expectativas de orçamento e prazo.",
+      "Identificação dos principais riscos e premissas do projeto.",
+      "Definição dos próximos passos para a elaboração da proposta técnica/comercial."
+    ]
+  },
+  "references": [
+    {
+      "id": "REF-001",
+      "type": "Briefing",
+      "source": "Texto Bruto de Entrada",
+      "timestamp": "2024-07-10T12:00:00Z"
+    }
+  ],
+  "history": [
+    {
+      "version": 1,
+      "date": "2026-07-07T02:35:10.028086",
+      "author": "IA Copilot",
+      "changes_summary": "Leitura e interpretação inicial de oportunidade a partir do documento bruto."
+    },
+    {
+      "version": 2,
+      "date": "2026-07-07T02:35:36.759173",
+      "author": "IA Copilot",
+      "changes_summary": "Enriquecimento inteligente executado. Análise de lacunas, perguntas de discovery, riscos e premissas gerados com suporte da Knowledge Base."
+    }
+  ],
+  "confidence_level": "Médio"
+}

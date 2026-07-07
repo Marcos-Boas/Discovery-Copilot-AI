@@ -1,0 +1,284 @@
+{
+  "version": "1.0",
+  "context_version": 2,
+  "opportunity": {
+    "id": "OPP-C6B19B",
+    "title": "Otimização de Infraestrutura e Monitoramento para Alfa Logística",
+    "source": "Manual Upload",
+    "created_at": "2023-10-27T10:00:00Z",
+    "status": "Enriquecido"
+  },
+  "customer": {
+    "name": "Alfa Logística",
+    "segment": "Logística",
+    "contact_person": "João Carlos - Gerente de TI"
+  },
+  "stakeholders": [
+    {
+      "name": "João Carlos",
+      "role": "Gerente de TI",
+      "contact": null
+    }
+  ],
+  "business_context": {
+    "problems": [
+      "Aplicações críticas apresentam lentidão em horários de pico",
+      "Storage Dell EMC Unity não possui contrato de suporte",
+      "Equipe de TI descobre problemas somente após abertura de chamados pelos usuários (monitoramento reativo)"
+    ],
+    "objectives": [
+      "Aumentar a disponibilidade dos sistemas antes da expansão prevista para o próximo ano"
+    ],
+    "motivations": [
+      "Operação cresceu rapidamente, resultando em 12 centros de distribuição",
+      "Expansão da operação prevista para o próximo ano"
+    ]
+  },
+  "current_scenario": {
+    "description": "A Alfa Logística opera com 12 centros de distribuição, utilizando infraestrutura VMware executando em servidores Dell PowerEdge e storage Dell EMC Unity. O storage foi adquirido há mais de sete anos e não possui contrato de suporte. Diversas aplicações críticas apresentam lentidão em horários de pico. O monitoramento é realizado apenas com Zabbix, levando a uma detecção reativa de problemas, geralmente após chamados de usuários.",
+    "key_points": [
+      "12 centros de distribuição",
+      "Infraestrutura VMware em servidores Dell PowerEdge e storage Dell EMC Unity",
+      "Storage com mais de 7 anos e sem contrato de suporte",
+      "Lentidão em aplicações críticas em horários de pico",
+      "Monitoramento reativo utilizando apenas Zabbix"
+    ]
+  },
+  "desired_scenario": {
+    "description": "Aumentar a disponibilidade dos sistemas para suportar a expansão da operação prevista para o próximo ano, garantindo que as aplicações críticas funcionem sem lentidão e que os problemas sejam identificados proativamente através de um sistema de monitoramento robusto.",
+    "key_points": [
+      "Maior disponibilidade dos sistemas",
+      "Aplicações críticas sem lentidão",
+      "Monitoramento proativo e eficiente",
+      "Infraestrutura preparada para suportar expansão futura"
+    ]
+  },
+  "scope": {
+    "included": [
+      "Análise e otimização da infraestrutura de virtualização (VMware)",
+      "Avaliação e possível substituição/atualização do storage (Dell EMC Unity)",
+      "Implementação de solução de monitoramento proativo",
+      "Melhoria da disponibilidade de sistemas críticos"
+    ],
+    "excluded": [
+      "Alterações no código-fonte das aplicações para otimização de performance",
+      "Migração de dados de aplicações não críticas",
+      "Gerenciamento de licenças de software de terceiros não relacionados à infraestrutura"
+    ]
+  },
+  "technologies": [
+    "VMware",
+    "Dell PowerEdge",
+    "Dell EMC Unity",
+    "Zabbix",
+    "VMware vSAN (ou outras soluções HCI)",
+    "Dell PowerStore (ou outros All-Flash Arrays)",
+    "Dynatrace (ou outras APM/Observability)",
+    "Grafana/Prometheus (para monitoramento avançado)"
+  ],
+  "constraints": [
+    "Storage Dell EMC Unity com mais de sete anos e sem contrato de suporte",
+    "Necessidade de manter a operação 24/7 durante a implementação das melhorias",
+    "Orçamento limitado para investimento em novas soluções"
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-01",
+      "description": "Os problemas de lentidão das aplicações críticas são majoritariamente causados por gargalos na infraestrutura (virtualização, storage, rede) e não por falhas de arquitetura ou código das aplicações.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-02",
+      "description": "A Alfa Logística possui capacidade e interesse em investir em novas soluções de hardware e software para modernizar sua infraestrutura e monitoramento.",
+      "impact": "Alto"
+    },
+    {
+      "id": "ASM-03",
+      "description": "A equipe de TI da Alfa Logística está aberta a adotar novas ferramentas e processos de monitoramento proativo.",
+      "impact": "Médio"
+    },
+    {
+      "id": "ASM-04",
+      "description": "A expansão da operação no próximo ano é um fator crítico e impulsionador para a tomada de decisão e investimento neste projeto.",
+      "impact": "Alto"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RSK-01",
+      "description": "Falha crítica no storage Dell EMC Unity devido à idade e falta de suporte, resultando em indisponibilidade de sistemas.",
+      "category": "Operacional",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Avaliar opções de renovação de suporte ou substituição do equipamento com urgência, considerando um plano de contingência para o storage atual."
+    },
+    {
+      "id": "RSK-02",
+      "description": "Indisponibilidade ou degradação contínua de aplicações críticas, impactando a operação logística e a satisfação do usuário.",
+      "category": "Negócio",
+      "impact": "Alto",
+      "probability": "Média",
+      "mitigation": "Implementar monitoramento proativo e otimizar a infraestrutura para garantir performance e disponibilidade, priorizando as aplicações de maior impacto."
+    },
+    {
+      "id": "RSK-03",
+      "description": "Resistência da equipe de TI à adoção de novas ferramentas e processos de monitoramento, dificultando a implementação e o uso efetivo da solução.",
+      "category": "Operacional",
+      "impact": "Médio",
+      "probability": "Baixa",
+      "mitigation": "Envolver a equipe de TI desde o início do discovery, demonstrando os benefícios e oferecendo treinamento adequado."
+    },
+    {
+      "id": "RSK-04",
+      "description": "Incompatibilidade ou complexidade na integração de novas soluções de monitoramento com a infraestrutura e aplicações existentes.",
+      "category": "Técnico",
+      "impact": "Médio",
+      "probability": "Média",
+      "mitigation": "Realizar um levantamento técnico detalhado das APIs e requisitos de integração durante o discovery."
+    }
+  ],
+  "missing_information": [
+    {
+      "id": "GAP-01",
+      "description": "Detalhes sobre as aplicações críticas que apresentam lentidão e seus requisitos específicos de performance e disponibilidade (RTO/RPO).",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-02",
+      "description": "Volume de dados, taxa de IOPS, capacidade utilizada e tipo de workload do storage Dell EMC Unity atual.",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Orçamento disponível e modelo de investimento (CAPEX/OPEX) para novas soluções de infraestrutura e monitoramento.",
+      "area": "Comercial",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-04",
+      "description": "Cronograma detalhado para a expansão da operação e para a implementação das melhorias de infraestrutura.",
+      "area": "Processo",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-05",
+      "description": "Mapeamento da rede atual, topologia, interconexão entre os 12 centros de distribuição e largura de banda disponível.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-06",
+      "description": "Número total de VMs, CPUs, RAM e licenças VMware existentes.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-07",
+      "description": "Quais são os principais stakeholders de negócio impactados pela lentidão das aplicações e quais suas expectativas?",
+      "area": "Comercial",
+      "priority": "Média"
+    }
+  ],
+  "questions": [
+    {
+      "id": "QST-01",
+      "question": "Quais são as aplicações críticas que apresentam lentidão, quais seus requisitos de RTO/RPO e quais os impactos diretos no negócio da Alfa Logística?",
+      "type": "Obrigatória",
+      "target_role": "Gerente de TI",
+      "context": "Entender a criticidade e o impacto direto dos problemas de performance para priorizar soluções e definir métricas de sucesso."
+    },
+    {
+      "id": "QST-02",
+      "question": "Qual o volume de dados, a taxa de IOPS, a capacidade utilizada e o tipo de workload (ex: banco de dados, arquivos) do storage Dell EMC Unity atual?",
+      "type": "Técnica",
+      "target_role": "Gerente de TI",
+      "context": "Avaliar a capacidade e performance do storage existente para propor soluções adequadas de substituição ou otimização."
+    },
+    {
+      "id": "QST-03",
+      "question": "Existe um orçamento estimado ou disponível para investimento em novas soluções de infraestrutura e monitoramento? Qual o modelo de investimento (CAPEX/OPEX) preferencial?",
+      "type": "Comercial",
+      "target_role": "Gerente de TI",
+      "context": "Entender a viabilidade financeira do projeto e dimensionar as propostas de acordo com as restrições orçamentárias."
+    },
+    {
+      "id": "QST-04",
+      "question": "Qual o cronograma previsto para a expansão da operação e qual a data limite para que as melhorias de disponibilidade e performance estejam implementadas?",
+      "type": "Contexto",
+      "target_role": "Gerente de TI",
+      "context": "Alinhar expectativas de prazo e planejar a execução do projeto de forma a atender às necessidades futuras e evitar impactos na expansão."
+    },
+    {
+      "id": "QST-05",
+      "question": "Quais são os principais indicadores de disponibilidade e performance que a diretoria busca alcançar com este projeto e como eles são medidos atualmente?",
+      "type": "Complementar",
+      "target_role": "Gerente de TI",
+      "context": "Quantificar os objetivos e definir métricas de sucesso para o projeto, permitindo a validação dos resultados."
+    },
+    {
+      "id": "QST-06",
+      "question": "Poderia nos fornecer um mapeamento da rede atual, incluindo topologia, interconexão entre os centros de distribuição e largura de banda disponível?",
+      "type": "Técnica",
+      "target_role": "Gerente de TI",
+      "context": "Compreender o ambiente de rede é crucial para avaliar gargalos e planejar a integração de novas soluções de monitoramento e storage."
+    },
+    {
+      "id": "QST-07",
+      "question": "Qual o número total de máquinas virtuais (VMs), a configuração de CPU/RAM e o status das licenças VMware existentes?",
+      "type": "Técnica",
+      "target_role": "Gerente de TI",
+      "context": "Detalhar o ambiente de virtualização é essencial para dimensionar corretamente as soluções de otimização e novas infraestruturas."
+    },
+    {
+      "id": "QST-08",
+      "question": "Além do Gerente de TI, quem são os outros stakeholders de negócio ou técnicos que deveriam ser envolvidos neste projeto?",
+      "type": "Contexto",
+      "target_role": "Gerente de TI",
+      "context": "Identificar todos os envolvidos para garantir que todas as perspectivas e requisitos sejam considerados."
+    }
+  ],
+  "executive_summary": "A Alfa Logística, uma empresa de logística com 12 centros de distribuição, enfrenta desafios críticos de performance em suas aplicações e opera com um storage Dell EMC Unity obsoleto e sem suporte. O monitoramento reativo atual impede a proatividade na resolução de problemas, impactando a operação. O objetivo central é elevar a disponibilidade e performance dos sistemas para suportar uma expansão operacional planejada para o próximo ano. Para isso, é fundamental otimizar a infraestrutura VMware existente, modernizar ou substituir o storage e implementar uma solução de monitoramento proativo e abrangente. Este projeto visa garantir a resiliência e escalabilidade necessárias para o crescimento futuro da empresa.",
+  "discovery_plan": {
+    "steps": [
+      "1. Reunião de alinhamento inicial: Apresentação da proposta de valor e validação das dores e objetivos de negócio com o Gerente de TI.",
+      "2. Levantamento técnico detalhado: Sessão aprofundada com a equipe de TI para mapear a infraestrutura atual (VMware, Dell PowerEdge, Dell EMC Unity, rede), incluindo volumes de dados, IOPS, número de VMs e licenças.",
+      "3. Análise de aplicações críticas: Detalhamento das aplicações que apresentam lentidão, seus requisitos de RTO/RPO e impacto no negócio, com possível envolvimento de key users.",
+      "4. Discussão sobre monitoramento: Apresentação de conceitos de monitoramento proativo e observabilidade, e levantamento das expectativas para uma nova solução.",
+      "5. Validação de escopo e restrições: Confirmação dos itens inclusos e excluídos, e discussão sobre orçamento, cronograma e requisitos de continuidade operacional.",
+      "6. Identificação de stakeholders adicionais: Mapeamento de outros envolvidos (negócio, segurança, etc.) para futuras interações."
+    ],
+    "methodology": "Abordagem colaborativa com entrevistas estruturadas e workshops interativos. Utilização de templates para coleta de dados técnicos e de negócio. Foco na identificação de requisitos funcionais e não-funcionais, e na priorização de soluções com base no impacto e viabilidade.",
+    "validation_metrics": [
+      "Confirmação das dores e objetivos do cliente, com quantificação de KPIs quando possível.",
+      "Mapeamento completo da infraestrutura relevante (virtualização, storage, rede) e suas características.",
+      "Identificação de requisitos técnicos e não-técnicos detalhados para as soluções de infraestrutura e monitoramento.",
+      "Alinhamento de expectativas de escopo, prazos, orçamento e modelo de investimento.",
+      "Identificação de todos os stakeholders chave e seus papéis no projeto."
+    ]
+  },
+  "references": [
+    {
+      "id": "REF-01",
+      "type": "Briefing Comercial",
+      "source": "CASE 01 - Alfa Logística",
+      "timestamp": "2023-10-27T09:30:00Z"
+    }
+  ],
+  "history": [
+    {
+      "version": 1,
+      "date": "2026-07-07T02:59:52.926855",
+      "author": "IA Copilot",
+      "changes_summary": "Leitura e interpretação inicial de oportunidade a partir do documento bruto."
+    },
+    {
+      "version": 2,
+      "date": "2026-07-07T03:05:40.942989",
+      "author": "IA Copilot",
+      "changes_summary": "Enriquecimento inteligente executado. Análise de lacunas, perguntas de discovery, riscos e premissas gerados com suporte da Knowledge Base."
+    }
+  ],
+  "confidence_level": "Médio"
+}

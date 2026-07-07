@@ -25,3 +25,8 @@ __pycache__/
 *$py.class
 .venv/
 env/
+
+# Variáveis de ambiente e segredos — NUNCA versionar
+.env
+.env.*
+*.env
