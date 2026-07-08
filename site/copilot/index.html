@@ -59,6 +59,8 @@
           </div>
         </div>
         <div class="action-bar">
+          <button class="btn btn-ghost w-auto" id="btn-export-md" title="Exportar o briefing em Markdown (.md)">⬇ .md</button>
+          <button class="btn btn-ghost w-auto" id="btn-export-pdf" title="Imprimir / Salvar como PDF">🖨 PDF</button>
           <button class="btn btn-secondary w-auto" id="btn-enrich">✨ Enriquecer com IA &amp; KB</button>
           <button class="btn btn-primary w-auto" id="btn-save">💾 Salvar &amp; Validar</button>
         </div>
@@ -390,6 +392,9 @@
 
   <!-- Toasts -->
   <div class="toast-container" id="toast-container"></div>
+
+  <!-- View de impressão (Exportar PDF via impressão nativa) -->
+  <div id="print-view" aria-hidden="true"></div>
 
   <script src="app.js"></script>
 </body>

@@ -92,6 +92,8 @@ function setupEventListeners() {
 
     btnEnrich.addEventListener("click", enrichOpportunity);
     btnSave.addEventListener("click", saveAndValidateOpportunity);
+    document.getElementById("btn-export-md").addEventListener("click", exportMarkdown);
+    document.getElementById("btn-export-pdf").addEventListener("click", exportPdf);
 
     // Bind escalares diretamente ao state
     bindScalar(inputTitle, () => state.brief.opportunity, "title");
@@ -645,4 +647,225 @@ async function loadKbArticles(searchQuery = "") {
     } catch (e) {
         console.error("Erro ao listar KB", e);
     }
+}
+
+/* ------------------------------------------------------------------ *
+ * Exportação do briefing (Markdown + PDF via impressão nativa)
+ * ------------------------------------------------------------------ */
+function slugify(str) {
+    return String(str || "briefing")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+        .slice(0, 60) || "briefing";
+}
+
+function downloadBlob(filename, content, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+}
+
+function exportMarkdown() {
+    if (!state.brief) { toast("Selecione uma oportunidade primeiro.", "error"); return; }
+    const b = state.brief;
+    const name = `${b.opportunity.id || "OPP"}-${slugify(b.opportunity.title)}.md`;
+    downloadBlob(name, briefToMarkdown(b), "text/markdown;charset=utf-8");
+    toast("Briefing exportado em Markdown (.md).", "success");
+}
+
+function exportPdf() {
+    if (!state.brief) { toast("Selecione uma oportunidade primeiro.", "error"); return; }
+    const view = document.getElementById("print-view");
+    view.innerHTML = briefToPrintHtml(state.brief);
+    const prevTitle = document.title;
+    document.title = `${state.brief.opportunity.id || "Briefing"} — ${state.brief.opportunity.title || "Canonical Brief"}`;
+    const restore = () => { document.title = prevTitle; window.removeEventListener("afterprint", restore); };
+    window.addEventListener("afterprint", restore);
+    toast("Abrindo diálogo de impressão — escolha \"Salvar como PDF\".", "info");
+    window.print();
+}
+
+/* Markdown ------------------------------------------------------------ */
+function briefToMarkdown(b) {
+    const out = [];
+    const p = (s = "") => out.push(s);
+    const cell = (s) => String(s ?? "").replace(/\|/g, "\\|").replace(/\r?\n/g, " ").trim();
+    const ul = (arr) => (arr && arr.length) ? arr.forEach(v => p(`- ${cell(v)}`)) : p("_Nenhum item._");
+    const dt = (d) => d ? new Date(d).toLocaleString("pt-BR") : "—";
+
+    p(`# ${b.opportunity.title || "Canonical Brief"}`);
+    p("");
+    p(`> **Cliente:** ${b.customer.name || "—"} · **Status:** ${b.opportunity.status || "—"} · **Versão:** v${b.context_version ?? 0} · **Confiança:** ${b.confidence_level || "—"}`);
+    p("");
+    p(`- **ID:** ${b.opportunity.id || "—"}`);
+    p(`- **Origem:** ${b.opportunity.source || "—"}`);
+    p(`- **Segmento:** ${b.customer.segment || "—"}`);
+    p(`- **Contato Principal:** ${b.customer.contact_person || "—"}`);
+    p(`- **Criado em:** ${dt(b.opportunity.created_at)}`);
+    p("");
+
+    if (b.executive_summary) { p(`## Resumo Executivo`); p(""); p(b.executive_summary); p(""); }
+
+    p(`## Stakeholders`); p("");
+    if (b.stakeholders.length) {
+        p(`| Nome | Papel / Cargo | Contato |`);
+        p(`|---|---|---|`);
+        b.stakeholders.forEach(s => p(`| ${cell(s.name)} | ${cell(s.role)} | ${cell(s.contact)} |`));
+    } else { p("_Nenhum stakeholder informado._"); }
+    p("");
+
+    p(`## Contexto de Negócio`); p("");
+    p(`### Problemas / Dores`); ul(b.business_context.problems); p("");
+    p(`### Objetivos Estratégicos`); ul(b.business_context.objectives); p("");
+    p(`### Motivações`); ul(b.business_context.motivations); p("");
+
+    p(`## Cenários`); p("");
+    p(`### Cenário Atual (As-Is)`); p(""); p(b.current_scenario.description || "_Não informado._"); p("");
+    ul(b.current_scenario.key_points); p("");
+    p(`### Cenário Desejado (To-Be)`); p(""); p(b.desired_scenario.description || "_Não informado._"); p("");
+    ul(b.desired_scenario.key_points); p("");
+
+    p(`## Escopo, Tecnologias & Restrições`); p("");
+    p(`### Escopo Incluso`); ul(b.scope.included); p("");
+    p(`### Fora de Escopo`); ul(b.scope.excluded); p("");
+    p(`### Tecnologias`); ul(b.technologies); p("");
+    p(`### Restrições`); ul(b.constraints); p("");
+
+    p(`## Premissas`); p("");
+    if (b.assumptions.length) {
+        p(`| ID | Descrição | Impacto |`);
+        p(`|---|---|---|`);
+        b.assumptions.forEach(a => p(`| ${cell(a.id)} | ${cell(a.description)} | ${cell(a.impact)} |`));
+    } else { p("_Nenhuma premissa registrada._"); }
+    p("");
+
+    p(`## Riscos`); p("");
+    if (b.risks.length) {
+        p(`| ID | Descrição | Categoria | Impacto | Probab. | Mitigação |`);
+        p(`|---|---|---|---|---|---|`);
+        b.risks.forEach(r => p(`| ${cell(r.id)} | ${cell(r.description)} | ${cell(r.category)} | ${cell(r.impact)} | ${cell(r.probability)} | ${cell(r.mitigation)} |`));
+    } else { p("_Nenhum risco mapeado._"); }
+    p("");
+
+    p(`## Lacunas de Informação (Gaps)`); p("");
+    if (b.missing_information.length) {
+        p(`| ID | Descrição | Área | Prioridade |`);
+        p(`|---|---|---|---|`);
+        b.missing_information.forEach(g => p(`| ${cell(g.id)} | ${cell(g.description)} | ${cell(g.area)} | ${cell(g.priority)} |`));
+    } else { p("_Nenhuma lacuna registrada._"); }
+    p("");
+
+    p(`## Perguntas de Discovery`); p("");
+    if (b.questions.length) {
+        b.questions.forEach(q => {
+            const role = q.target_role ? ` _(alvo: ${cell(q.target_role)})_` : "";
+            p(`- **[${cell(q.type)}]** ${cell(q.question)}${role}`);
+            if (q.context) p(`  - Contexto: ${cell(q.context)}`);
+        });
+    } else { p("_Nenhuma pergunta sugerida._"); }
+    p("");
+
+    p(`## Discovery Plan`); p("");
+    p(`**Metodologia:** ${b.discovery_plan.methodology || "—"}`); p("");
+    p(`### Passos Recomendados`); ul(b.discovery_plan.steps); p("");
+    p(`### Métricas de Validação`); ul(b.discovery_plan.validation_metrics); p("");
+
+    p(`## Referências`); p("");
+    if (b.references.length) {
+        p(`| Tipo | Fonte / Arquivo |`);
+        p(`|---|---|`);
+        b.references.forEach(r => p(`| ${cell(r.type)} | ${cell(r.source)} |`));
+    } else { p("_Nenhuma referência._"); }
+    p("");
+
+    p(`---`);
+    p(`_Exportado em ${new Date().toLocaleString("pt-BR")} · Discovery Copilot AI · Onion Mini_`);
+    return out.join("\n");
+}
+
+/* Print HTML ---------------------------------------------------------- */
+function briefToPrintHtml(b) {
+    const e = escapeHtml;
+    const dt = (d) => d ? new Date(d).toLocaleString("pt-BR") : "—";
+    const ul = (arr) => (arr && arr.length)
+        ? `<ul>${arr.map(v => `<li>${e(v)}</li>`).join("")}</ul>`
+        : `<p class="pv-empty">Nenhum item.</p>`;
+    const table = (headers, rows) => rows.length
+        ? `<table class="pv-table"><thead><tr>${headers.map(h => `<th>${e(h)}</th>`).join("")}</tr></thead>`
+          + `<tbody>${rows.map(r => `<tr>${r.map(c => `<td>${e(c)}</td>`).join("")}</tr>`).join("")}</tbody></table>`
+        : `<p class="pv-empty">Sem registros.</p>`;
+    const section = (title, inner) => `<section class="pv-section"><h2>${e(title)}</h2>${inner}</section>`;
+
+    const parts = [];
+    parts.push(`<div class="pv-title">${e(b.opportunity.title || "Canonical Brief")}</div>`);
+    parts.push(`<div class="pv-sub">Discovery Copilot AI · Onion Mini · ${e(b.opportunity.id || "")}</div>`);
+    parts.push(`<div class="pv-badges">
+        <span>Cliente: ${e(b.customer.name || "—")}</span>
+        <span>Status: ${e(b.opportunity.status || "—")}</span>
+        <span>Versão: v${e(b.context_version ?? 0)}</span>
+        <span>Confiança: ${e(b.confidence_level || "—")}</span>
+        <span>Segmento: ${e(b.customer.segment || "—")}</span>
+        <span>Contato: ${e(b.customer.contact_person || "—")}</span>
+        <span>Origem: ${e(b.opportunity.source || "—")}</span>
+        <span>Criado: ${e(dt(b.opportunity.created_at))}</span>
+    </div>`);
+
+    if (b.executive_summary) {
+        parts.push(section("Resumo Executivo", `<p class="pv-scenario">${e(b.executive_summary)}</p>`));
+    }
+
+    parts.push(section("Stakeholders",
+        table(["Nome", "Papel / Cargo", "Contato"], b.stakeholders.map(s => [s.name || "", s.role || "", s.contact || ""]))));
+
+    parts.push(section("Contexto de Negócio",
+        `<h3>Problemas / Dores</h3>${ul(b.business_context.problems)}`
+        + `<h3>Objetivos Estratégicos</h3>${ul(b.business_context.objectives)}`
+        + `<h3>Motivações</h3>${ul(b.business_context.motivations)}`));
+
+    parts.push(section("Cenários",
+        `<h3>Cenário Atual (As-Is)</h3><p class="pv-scenario">${e(b.current_scenario.description || "Não informado.")}</p>${ul(b.current_scenario.key_points)}`
+        + `<h3>Cenário Desejado (To-Be)</h3><p class="pv-scenario">${e(b.desired_scenario.description || "Não informado.")}</p>${ul(b.desired_scenario.key_points)}`));
+
+    parts.push(section("Escopo, Tecnologias & Restrições",
+        `<h3>Escopo Incluso</h3>${ul(b.scope.included)}`
+        + `<h3>Fora de Escopo</h3>${ul(b.scope.excluded)}`
+        + `<h3>Tecnologias</h3>${ul(b.technologies)}`
+        + `<h3>Restrições</h3>${ul(b.constraints)}`));
+
+    parts.push(section("Premissas",
+        table(["ID", "Descrição", "Impacto"], b.assumptions.map(a => [a.id || "", a.description || "", a.impact || ""]))));
+
+    parts.push(section("Riscos",
+        table(["ID", "Descrição", "Categoria", "Impacto", "Probab.", "Mitigação"],
+            b.risks.map(r => [r.id || "", r.description || "", r.category || "", r.impact || "", r.probability || "", r.mitigation || ""]))));
+
+    parts.push(section("Lacunas de Informação (Gaps)",
+        table(["ID", "Descrição", "Área", "Prioridade"],
+            b.missing_information.map(g => [g.id || "", g.description || "", g.area || "", g.priority || ""]))));
+
+    const questionsHtml = b.questions.length
+        ? `<ul>${b.questions.map(q => {
+            const role = q.target_role ? ` <em>(alvo: ${e(q.target_role)})</em>` : "";
+            const ctx = q.context ? `<br><span class="pv-empty">Contexto: ${e(q.context)}</span>` : "";
+            return `<li><strong>[${e(q.type || "")}]</strong> ${e(q.question || "")}${role}${ctx}</li>`;
+        }).join("")}</ul>`
+        : `<p class="pv-empty">Nenhuma pergunta sugerida.</p>`;
+    parts.push(section("Perguntas de Discovery", questionsHtml));
+
+    parts.push(section("Discovery Plan",
+        `<p><strong>Metodologia:</strong> ${e(b.discovery_plan.methodology || "—")}</p>`
+        + `<h3>Passos Recomendados</h3>${ul(b.discovery_plan.steps)}`
+        + `<h3>Métricas de Validação</h3>${ul(b.discovery_plan.validation_metrics)}`));
+
+    parts.push(section("Referências",
+        table(["Tipo", "Fonte / Arquivo"], b.references.map(r => [r.type || "", r.source || ""]))));
+
+    parts.push(`<div class="pv-foot">Exportado em ${e(new Date().toLocaleString("pt-BR"))} · Discovery Copilot AI · Onion Mini 🧅</div>`);
+    return parts.join("");
 }
