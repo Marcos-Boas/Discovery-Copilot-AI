@@ -17,8 +17,8 @@
 - **Validação de Dados:** Todo dado trafegado na API do backend deve ser validado estritamente usando Schemas do Pydantic, espelhando os campos obrigatórios do [canonical-brief.md](file:///c:/Users/marco/OneDrive/Área de Trabalho/pulse mais/onion-portable/onion-mini/docs/product/canonical-brief.md).
 - **Gotchas (Armadilhas):**
   - O SDK do Gemini (`google-genai`) requer `GEMINI_API_KEY` no ambiente (carregada via `start.ps1` ou `.env`). Validado em e2e real em 2026-07-06 (15/15 checks, ~20s create + ~27s enrich).
-  - `start.ps1` carrega `.env` e valida `GEMINI_API_KEY`, mas o frontend (`site/copilot/app.js`) hardcoda `http://localhost:8000` — usar `-Port` quebra a UI sem ajuste manual.
-  - Fontes `site/fonts/fraunces-var.woff2` referenciadas em `site/index.html` e `site/copilot/index.html` não existem no repo (404 em runtime).
+  - `site/copilot/app.js` deriva `API_BASE` de `window.location.origin` quando servido via HTTP (fallback `http://localhost:8000` para abertura via `file://`) — usar `-Port` não quebra mais a UI.
+  - Fontes `fraunces-var.woff2` / `fraunces-italic-var.woff2` presentes em `site/fonts/` (self-hosted no re-skin).
   - Evitar complexidades de transpiladores no frontend (como TypeScript ou Babel) para manter o desenvolvimento ágil, limpo e direto no navegador.
 
 ## 3. Arquitetura & Mapa do Código
@@ -70,11 +70,13 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 
 **Status lifecycle no código:** `Inicial` → `Enriquecido` → `Validado`. Estados `Consolidado` e `Encerrado` existem no model mas sem rota/UI.
 
-### Cobertura UI vs Model (sync 2026-07-06)
+### Cobertura UI vs Model (edição total 2026-07-08)
 
-| Exposto e editável | Somente leitura | Ausente na UI |
-|---|---|---|
-| title, customer, confidence, business problems, scenarios, scope, technologies, constraints, executive summary, discovery plan | gaps, questions, risks, assumptions, history | stakeholders, objectives, motivations, key_points, references, validation_metrics |
+| Exposto e editável | Somente leitura |
+|---|---|
+| **Todos os campos de conteúdo**: title, source, customer (name/segment/contact), confidence, stakeholders, business_context (problems/objectives/motivations), current/desired scenario (description + key_points), scope (included/excluded), technologies, constraints, executive_summary, assumptions, risks, missing_information (gaps), questions, discovery_plan (methodology/steps/validation_metrics), references | metadados de sistema: id, created_at, status (lifecycle), version, context_version, history |
+
+Edição via componentes genéricos no `app.js`: `renderStringList` (listas de texto) e `renderObjectList` (listas de objetos com selects para enums e IDs auto-gerados). O `state.brief` é a fonte de verdade e é enviado inteiro no `PUT /validate`.
 
 ### Dependências declaradas vs usadas
 
@@ -108,10 +110,10 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 > Prioridade derivada da engenharia reversa código ↔ docs. Referencia RFs em [traceability.md](./product/traceability.md).
 
 *   [x] **Corrigir `GEMINI_API_KEY` em `ai.py`** — trocar env var incorreta por `"GEMINI_API_KEY"` (RF-002, RF-009–RF-015) -- **Feito** *(e2e 15/15 em 2026-07-06)*
-*   [ ] **Tornar `API_BASE` dinâmico no frontend** — derivar de `window.location` ou config injetada (RNF-006) -- **A Fazer**
+*   [x] **Tornar `API_BASE` dinâmico no frontend** — derivado de `window.location.origin` com fallback `file://` (RNF-006) -- **Feito** *(2026-07-08)*
 *   [ ] **Corrigir busca KB multi-termo** — query `"term1 OR term2"` não funciona com `LIKE` único em `kb.py` (RF-009) -- **A Fazer**
 *   [ ] **Upload PDF/DOCX** — implementar parsing com `pypdf`/`python-docx` já declarados (RF-001) -- **A Fazer**
-*   [ ] **Edição de gaps/perguntas/riscos/premissas na UI** — hoje são read-only (RF-016) -- **A Fazer**
+*   [x] **Edição de TODOS os campos na UI** — gaps, perguntas, riscos, premissas, stakeholders, objetivos, motivações, key_points, referências, métricas etc. agora editáveis com adicionar/remover (RF-016) -- **Feito** *(2026-07-08)*
 *   [ ] **Adicionar fontes em `site/fonts/`** ou remover referências quebradas -- **A Fazer**
 *   [ ] **Suite de testes automatizada** — converter `test_e2e.py` para pytest ou CI (DoD traceability) -- **A Fazer**
 *   [ ] **Status `Consolidado`/`Encerrado`** — rotas e transições de lifecycle (RF-015) -- **A Fazer**
@@ -122,7 +124,7 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 - **Armazenamento Não Concorrente:** JSON local sem file locking. Risco baixo para MVP de analista único.
 - **KB simplificada:** Busca `LIKE` em SQLite, não semântica (RF-009 parcial). Aceitável para MVP conforme ADR de RAG no prompt.
 - **Referências de origem ausentes:** RF-004 (explicabilidade por documento/trecho) não implementado no fluxo de extração.
-- **Chat UI stub:** CSS de chat em `style.css` sem lógica em `app.js`.
+- ~~**Chat UI stub:** CSS de chat sem lógica~~ **Resolvido** (2026-07-08): CSS morto removido no redesign.
 
 ## 7. 🔁 Redesenhos
 > A casa do redesenho de Engenharia: todo checkpoint de fechamento do Ciclo de Engenharia registra aqui **o que muda no processo**.
@@ -131,3 +133,4 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 |---|---|---|
 | 2026-07-06 | Setup MVP / Ciclo de Engenharia 01 | Criar `.venv` antes de qualquer código; validar imports no início do ciclo para evitar problemas de permissão no Windows. |
 | 2026-07-06 | Sync código ↔ docs / Ciclo Sync 01 | Após cada ciclo de engenharia, rodar `@docs` sync antes de marcar tasks como Feito; validar env vars e e2e com chave real, não só HTTP 200. |
+| 2026-07-08 | Edição total + redesign UI / Ciclo Eng 02 | Renderização data-driven (`renderStringList`/`renderObjectList`) elimina dessincronização form↔model; próximo ciclo deve derivar os descritores de campo do próprio schema Pydantic (via `/openapi.json`) para zero duplicação de enums no frontend. |

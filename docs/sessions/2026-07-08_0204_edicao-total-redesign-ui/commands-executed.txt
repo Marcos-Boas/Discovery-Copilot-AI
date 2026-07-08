@@ -1,0 +1,5 @@
+python3 -m venv .venv
+pip install -r backend/requirements.txt
+uvicorn backend.main:app --host 127.0.0.1 --port 8000
+node --check site/copilot/app.js
+# roundtrip manual: POST /api/opportunities -> editar todos os campos -> PUT /validate

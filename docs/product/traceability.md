@@ -91,7 +91,7 @@ Esta tabela vincula os Requisitos Não Funcionais (RNF) às diretrizes e restri�
 | RF-013 | ⚠️ | Idem RF-010 |
 | RF-014 | ⚠️ | Campo `executive_summary`; preenchido no enrich |
 | RF-015 | ⚠️ | `discovery_plan` no model/UI; exportação de documento ausente |
-| RF-016 | ⚠️ | Edição manual de campos principais; gaps/riscos/perguntas read-only |
+| RF-016 | ✅ | Edição manual de todos os campos do brief na UI (2026-07-08), incluindo gaps/riscos/perguntas/premissas/stakeholders/referências |
 
 | RNF | Status | Nota |
 |---|---|---|

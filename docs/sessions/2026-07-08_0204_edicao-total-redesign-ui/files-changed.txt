@@ -1,0 +1,6 @@
+site/copilot/index.html
+site/copilot/style.css
+site/copilot/app.js
+docs/technical-context-lite.md
+docs/product/traceability.md
+docs/sessions/README.md

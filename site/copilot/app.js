@@ -1,66 +1,71 @@
 /* app.js · Discovery Copilot UI · Lógica do Frontend Vanilla JS */
 
-const API_BASE = "http://localhost:8000";
-let activeOpportunity = null;
+// API_BASE dinâmico: usa a origem atual quando servido pelo backend (/site/...),
+// com fallback para localhost:8000 ao abrir o arquivo direto (file://).
+const API_BASE = (window.location.protocol === "http:" || window.location.protocol === "https:")
+    ? window.location.origin
+    : "http://localhost:8000";
 
-// Elementos da DOM
+const state = { brief: null };
+
+/* ------------------------------------------------------------------ *
+ * Referências da DOM
+ * ------------------------------------------------------------------ */
+const apiPill = document.getElementById("api-pill");
 const apiStatusSpan = document.getElementById("api-status");
 const opportunityListContainer = document.getElementById("opportunity-list");
 const workspaceHeader = document.getElementById("workspace-header");
 const workspaceBody = document.getElementById("workspace-body");
 const emptyWorkspace = document.getElementById("empty-workspace");
 const globalLoader = document.getElementById("global-loader");
+const toastContainer = document.getElementById("toast-container");
 
-// Modal de Upload
 const uploadModal = document.getElementById("upload-modal");
-const btnShowUpload = document.getElementById("btn-show-upload");
-const btnEmptyImport = document.getElementById("btn-empty-import");
-const btnCloseUpload = document.getElementById("btn-close-upload");
 const uploadForm = document.getElementById("upload-form");
 
-// Botões de Ação
 const btnEnrich = document.getElementById("btn-enrich");
 const btnSave = document.getElementById("btn-save");
 
-// Elementos de Exibição do Cabeçalho
 const oppDisplayTitle = document.getElementById("opp-display-title");
 const oppDisplayCustomer = document.getElementById("opp-display-customer");
 const oppDisplayVersion = document.getElementById("opp-display-version");
+const oppDisplayStatus = document.getElementById("opp-display-status");
 
-// KB Search e Histórico
 const kbSearchInput = document.getElementById("kb-search-input");
 const kbResultsContainer = document.getElementById("kb-results-container");
 const historyContainer = document.getElementById("history-container");
 
-// Metadados
+const metaId = document.getElementById("meta-id");
 const metaSource = document.getElementById("meta-source");
 const metaCreated = document.getElementById("meta-created");
-const metaId = document.getElementById("meta-id");
+const metaModel = document.getElementById("meta-model");
 
-// Inputs do Formulário
-const formBrief = document.getElementById("canonical-brief-form");
+// Inputs escalares
 const inputTitle = document.getElementById("input-title");
+const inputSource = document.getElementById("input-source");
 const inputCustomerName = document.getElementById("input-customer-name");
 const inputCustomerSegment = document.getElementById("input-customer-segment");
+const inputCustomerContact = document.getElementById("input-customer-contact");
 const inputConfidenceLevel = document.getElementById("input-confidence-level");
-const inputProblems = document.getElementById("input-business-problems");
 const inputCurrentScenario = document.getElementById("input-current-scenario");
 const inputDesiredScenario = document.getElementById("input-desired-scenario");
-const inputScopeIncluded = document.getElementById("input-scope-included");
-const inputScopeExcluded = document.getElementById("input-scope-excluded");
-const inputTechnologies = document.getElementById("input-technologies");
-const inputConstraints = document.getElementById("input-constraints");
 const inputExecutiveSummary = document.getElementById("input-executive-summary");
 const inputPlanMethodology = document.getElementById("input-plan-methodology");
-const inputPlanSteps = document.getElementById("input-plan-steps");
 
-// Containers de Lists no Form
-const displayGapsContainer = document.getElementById("display-gaps-container");
-const displayQuestionsContainer = document.getElementById("display-questions-container");
-const displayRisksContainer = document.getElementById("display-risks-container");
-const displayAssumptionsContainer = document.getElementById("display-assumptions-container");
+/* ------------------------------------------------------------------ *
+ * Enums (selects)
+ * ------------------------------------------------------------------ */
+const IMPACT = ["Alto", "Médio", "Baixo"];
+const PROBABILITY = ["Alta", "Média", "Baixa"];
+const PRIORITY = ["Alta", "Média", "Baixa"];
+const RISK_CATEGORY = ["Técnico", "Comercial", "Operacional", "Negócio"];
+const GAP_AREA = ["Técnica", "Comercial", "Escopo", "Processo"];
+const QUESTION_TYPE = ["Obrigatória", "Complementar", "Técnica", "Comercial", "Contexto"];
+const REFERENCE_TYPE = ["Email", "PDF", "CRM", "Documento", "Ata", "Outro"];
 
-// Inicialização
+/* ------------------------------------------------------------------ *
+ * Inicialização
+ * ------------------------------------------------------------------ */
 document.addEventListener("DOMContentLoaded", () => {
     checkApiStatus();
     loadOpportunities();
@@ -68,15 +73,15 @@ document.addEventListener("DOMContentLoaded", () => {
     setupEventListeners();
 });
 
-// Event Listeners
 function setupEventListeners() {
-    // Modal Upload
-    const openUpload = () => { uploadModal.style.display = "flex"; };
-    const closeUpload = () => { uploadModal.style.display = "none"; uploadForm.reset(); };
-    btnShowUpload.addEventListener("click", openUpload);
-    btnEmptyImport.addEventListener("click", openUpload);
-    btnCloseUpload.addEventListener("click", closeUpload);
-    
+    const openUpload = () => { uploadModal.classList.add("open"); };
+    const closeUpload = () => { uploadModal.classList.remove("open"); uploadForm.reset(); };
+
+    document.getElementById("btn-show-upload").addEventListener("click", openUpload);
+    document.getElementById("btn-empty-import").addEventListener("click", openUpload);
+    document.getElementById("btn-close-upload").addEventListener("click", closeUpload);
+    uploadModal.addEventListener("click", (e) => { if (e.target === uploadModal) closeUpload(); });
+
     uploadForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const text = document.getElementById("upload-text").value;
@@ -85,74 +90,108 @@ function setupEventListeners() {
         await createOpportunity(text, source);
     });
 
-    // Enriquecer e Salvar
     btnEnrich.addEventListener("click", enrichOpportunity);
     btnSave.addEventListener("click", saveAndValidateOpportunity);
 
-    // Pesquisa KB
-    kbSearchInput.addEventListener("input", debounce(() => {
-        loadKbArticles(kbSearchInput.value);
-    }, 300));
+    // Bind escalares diretamente ao state
+    bindScalar(inputTitle, () => state.brief.opportunity, "title");
+    bindScalar(inputSource, () => state.brief.opportunity, "source");
+    bindScalar(inputCustomerName, () => state.brief.customer, "name");
+    bindScalar(inputCustomerSegment, () => state.brief.customer, "segment");
+    bindScalar(inputCustomerContact, () => state.brief.customer, "contact_person");
+    bindScalar(inputConfidenceLevel, () => state.brief, "confidence_level");
+    bindScalar(inputCurrentScenario, () => state.brief.current_scenario, "description");
+    bindScalar(inputDesiredScenario, () => state.brief.desired_scenario, "description");
+    bindScalar(inputExecutiveSummary, () => state.brief, "executive_summary");
+    bindScalar(inputPlanMethodology, () => state.brief.discovery_plan, "methodology");
+
+    kbSearchInput.addEventListener("input", debounce(() => loadKbArticles(kbSearchInput.value), 300));
 }
 
-// Utilitários de Requisição
+function bindScalar(input, getObj, key) {
+    input.addEventListener("input", () => {
+        if (!state.brief) return;
+        getObj()[key] = input.value;
+        if (input === inputTitle) oppDisplayTitle.innerText = input.value || "Oportunidade";
+        if (input === inputCustomerName) oppDisplayCustomer.innerText = input.value || "—";
+    });
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilitários de UI
+ * ------------------------------------------------------------------ */
+function showLoader() { globalLoader.style.display = "block"; }
+function hideLoader() { globalLoader.style.display = "none"; }
+
+function toast(message, type = "info") {
+    const icons = { success: "✅", error: "⚠️", info: "ℹ️" };
+    const el = document.createElement("div");
+    el.className = `toast ${type}`;
+    el.innerHTML = `<span class="t-icon">${icons[type] || icons.info}</span><span>${escapeHtml(message)}</span>`;
+    toastContainer.appendChild(el);
+    setTimeout(() => {
+        el.classList.add("hide");
+        setTimeout(() => el.remove(), 260);
+    }, 3800);
+}
+
+function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+    };
+}
+
+/* ------------------------------------------------------------------ *
+ * API
+ * ------------------------------------------------------------------ */
 async function checkApiStatus() {
     try {
         const response = await fetch(`${API_BASE}/api/kb`);
         if (response.ok) {
             apiStatusSpan.innerText = "Conectado";
-            apiStatusSpan.style.color = "#059669";
+            apiPill.classList.add("online");
+            return;
         }
+        throw new Error();
     } catch (e) {
         apiStatusSpan.innerText = "Desconectado";
-        apiStatusSpan.style.color = "#DC2626";
+        apiPill.classList.remove("online");
     }
 }
 
-function showLoader() {
-    // Injeta loader na tela
-    document.body.appendChild(globalLoader);
-    globalLoader.style.display = "flex";
-}
-
-function hideLoader() {
-    globalLoader.style.display = "none";
-}
-
-// Carregar Oportunidades
 async function loadOpportunities() {
     try {
         const response = await fetch(`${API_BASE}/api/opportunities`);
         if (!response.ok) throw new Error();
         const data = await response.json();
-        
+
         opportunityListContainer.innerHTML = "";
-        
         if (data.length === 0) {
-            opportunityListContainer.innerHTML = `
-                <div class="sans" style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 2rem;">
-                    Nenhuma oportunidade cadastrada.
-                </div>`;
+            opportunityListContainer.innerHTML = `<div class="sidebar-empty">Nenhuma oportunidade cadastrada.</div>`;
             return;
         }
 
         data.forEach(opp => {
-            const activeClass = (activeOpportunity && activeOpportunity.opportunity.id === opp.id) ? "active" : "";
+            const activeClass = (state.brief && state.brief.opportunity.id === opp.id) ? "active" : "";
             const item = document.createElement("div");
             item.className = `opp-item ${activeClass}`;
             item.onclick = () => selectOpportunity(opp.id);
-            
-            const dateStr = new Date(opp.created_at).toLocaleDateString("pt-BR", {day: "2-digit", month: "2-digit"});
-            const statusClass = `status-${opp.status.toLowerCase()}`;
-            
+            const dateStr = new Date(opp.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
             item.innerHTML = `
-                <h4>${opp.title}</h4>
-                <p>${opp.customer_name}</p>
+                <h4>${escapeHtml(opp.title)}</h4>
+                <p>${escapeHtml(opp.customer_name)}</p>
                 <div class="opp-meta">
-                  <span class="status-badge ${statusClass}">${opp.status}</span>
+                  <span class="status-badge ${statusClass(opp.status)}">${escapeHtml(opp.status)}</span>
                   <span>v${opp.context_version} · ${dateStr}</span>
-                </div>
-            `;
+                </div>`;
             opportunityListContainer.appendChild(item);
         });
     } catch (e) {
@@ -160,31 +199,35 @@ async function loadOpportunities() {
     }
 }
 
-// Selecionar Oportunidade
+function statusClass(status) {
+    const map = {
+        "Inicial": "status-inicial",
+        "Enriquecido": "status-enriquecido",
+        "Validado": "status-validado",
+        "Consolidado": "status-consolidado",
+        "Encerrado": "status-encerrado"
+    };
+    return map[status] || "status-inicial";
+}
+
 async function selectOpportunity(oppId) {
     showLoader();
     try {
         const response = await fetch(`${API_BASE}/api/opportunities/${oppId}`);
         if (!response.ok) throw new Error();
         const brief = await response.json();
-        
-        activeOpportunity = brief;
-        renderBriefEditor(brief);
-        
-        // Destaca item selecionado
-        const items = document.querySelectorAll(".opp-item");
-        items.forEach(it => it.classList.remove("active"));
-        loadOpportunities(); // Atualiza classes
-        
+        state.brief = normalizeBrief(brief);
+        renderBriefEditor();
+        loadOpportunities();
     } catch (e) {
-        alert("Erro ao selecionar a oportunidade.");
+        toast("Erro ao selecionar a oportunidade.", "error");
     } finally {
         hideLoader();
     }
 }
 
-// Criar Oportunidade
 async function createOpportunity(text, source) {
+    if (!text || !text.trim()) { toast("O briefing está vazio.", "error"); return; }
     showLoader();
     try {
         const response = await fetch(`${API_BASE}/api/opportunities`, {
@@ -194,274 +237,412 @@ async function createOpportunity(text, source) {
         });
         if (!response.ok) throw new Error();
         const brief = await response.json();
-        
-        activeOpportunity = brief;
+        state.brief = normalizeBrief(brief);
         await loadOpportunities();
-        renderBriefEditor(brief);
+        renderBriefEditor();
+        toast("Briefing processado. Canonical Brief criado.", "success");
     } catch (e) {
-        alert("Erro ao processar o briefing inicial. Certifique-se de que o backend e a API Key estão configurados.");
+        toast("Erro ao processar o briefing. Verifique o backend e a API Key.", "error");
     } finally {
         hideLoader();
     }
 }
 
-// Enriquecer Oportunidade
 async function enrichOpportunity() {
-    if (!activeOpportunity) return;
+    if (!state.brief) return;
     showLoader();
     try {
-        const oppId = activeOpportunity.opportunity.id;
-        const response = await fetch(`${API_BASE}/api/opportunities/${oppId}/enrich`, {
-            method: "POST"
-        });
+        const oppId = state.brief.opportunity.id;
+        const response = await fetch(`${API_BASE}/api/opportunities/${oppId}/enrich`, { method: "POST" });
         if (!response.ok) throw new Error();
         const brief = await response.json();
-        
-        activeOpportunity = brief;
+        state.brief = normalizeBrief(brief);
         await loadOpportunities();
-        renderBriefEditor(brief);
-        alert("Oportunidade enriquecida com IA e Knowledge Base com sucesso!");
+        renderBriefEditor();
+        toast("Oportunidade enriquecida com IA e Knowledge Base.", "success");
     } catch (e) {
-        alert("Erro ao enriquecer a oportunidade.");
+        toast("Erro ao enriquecer a oportunidade.", "error");
     } finally {
         hideLoader();
     }
 }
 
-// Salvar e Validar Oportunidade
 async function saveAndValidateOpportunity() {
-    if (!activeOpportunity) return;
+    if (!state.brief) return;
     showLoader();
     try {
-        const oppId = activeOpportunity.opportunity.id;
-        const briefData = serializeBriefFromForm();
-        
+        const oppId = state.brief.opportunity.id;
         const response = await fetch(`${API_BASE}/api/opportunities/${oppId}/validate`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(briefData)
+            body: JSON.stringify(state.brief)
         });
         if (!response.ok) throw new Error();
         const brief = await response.json();
-        
-        activeOpportunity = brief;
+        state.brief = normalizeBrief(brief);
         await loadOpportunities();
-        renderBriefEditor(brief);
-        alert("Canonical Brief salvo e validado com sucesso! Histórico atualizado.");
+        renderBriefEditor();
+        toast("Canonical Brief salvo e validado. Histórico atualizado.", "success");
     } catch (e) {
-        alert("Erro ao salvar oportunidade.");
+        toast("Erro ao salvar oportunidade.", "error");
     } finally {
         hideLoader();
     }
 }
 
-// Renderizar Formulário com dados do Brief
-function renderBriefEditor(brief) {
+/* ------------------------------------------------------------------ *
+ * Normalização defensiva (garante nós/arrays existentes)
+ * ------------------------------------------------------------------ */
+function normalizeBrief(b) {
+    b.opportunity = b.opportunity || {};
+    b.customer = b.customer || {};
+    b.business_context = b.business_context || {};
+    b.business_context.problems = b.business_context.problems || [];
+    b.business_context.objectives = b.business_context.objectives || [];
+    b.business_context.motivations = b.business_context.motivations || [];
+    b.current_scenario = b.current_scenario || { description: "", key_points: [] };
+    b.current_scenario.key_points = b.current_scenario.key_points || [];
+    b.desired_scenario = b.desired_scenario || { description: "", key_points: [] };
+    b.desired_scenario.key_points = b.desired_scenario.key_points || [];
+    b.scope = b.scope || { included: [], excluded: [] };
+    b.scope.included = b.scope.included || [];
+    b.scope.excluded = b.scope.excluded || [];
+    b.technologies = b.technologies || [];
+    b.constraints = b.constraints || [];
+    b.stakeholders = b.stakeholders || [];
+    b.assumptions = b.assumptions || [];
+    b.risks = b.risks || [];
+    b.missing_information = b.missing_information || [];
+    b.questions = b.questions || [];
+    b.discovery_plan = b.discovery_plan || { steps: [], methodology: "", validation_metrics: [] };
+    b.discovery_plan.steps = b.discovery_plan.steps || [];
+    b.discovery_plan.validation_metrics = b.discovery_plan.validation_metrics || [];
+    b.references = b.references || [];
+    b.history = b.history || [];
+    b.executive_summary = b.executive_summary || "";
+    b.confidence_level = b.confidence_level || "Baixo";
+    return b;
+}
+
+/* ------------------------------------------------------------------ *
+ * Render principal
+ * ------------------------------------------------------------------ */
+function renderBriefEditor() {
+    const b = state.brief;
     emptyWorkspace.style.display = "none";
     workspaceHeader.style.display = "flex";
     workspaceBody.style.display = "grid";
 
     // Cabeçalho
-    oppDisplayTitle.innerText = brief.opportunity.title;
-    oppDisplayCustomer.innerText = brief.customer.name || "N/A";
-    oppDisplayVersion.innerText = `v${brief.context_version}`;
+    oppDisplayTitle.innerText = b.opportunity.title || "Oportunidade";
+    oppDisplayCustomer.innerText = b.customer.name || "—";
+    oppDisplayVersion.innerText = `v${b.context_version}`;
+    oppDisplayStatus.innerText = b.opportunity.status || "Inicial";
+    oppDisplayStatus.className = `status-badge ${statusClass(b.opportunity.status)}`;
 
     // Metadados
-    metaSource.innerText = brief.opportunity.source;
-    metaCreated.innerText = new Date(brief.opportunity.created_at).toLocaleString("pt-BR");
-    metaId.innerText = brief.opportunity.id;
+    metaId.innerText = b.opportunity.id || "—";
+    metaSource.innerText = b.opportunity.source || "—";
+    metaCreated.innerText = b.opportunity.created_at ? new Date(b.opportunity.created_at).toLocaleString("pt-BR") : "—";
+    metaModel.innerText = b.version || "—";
 
-    // Inputs Textos Gerais
-    inputTitle.value = brief.opportunity.title;
-    inputCustomerName.value = brief.customer.name || "";
-    inputCustomerSegment.value = brief.customer.segment || "";
-    inputConfidenceLevel.value = brief.confidence_level || "Baixo";
-    
-    inputProblems.value = (brief.business_context.problems || []).join("\n");
-    inputCurrentScenario.value = brief.current_scenario.description || "";
-    inputDesiredScenario.value = brief.desired_scenario.description || "";
-    
-    inputScopeIncluded.value = (brief.scope.included || []).join("\n");
-    inputScopeExcluded.value = (brief.scope.excluded || []).join("\n");
-    
-    inputTechnologies.value = (brief.technologies || []).join(", ");
-    inputConstraints.value = (brief.constraints || []).join("\n");
-    
-    inputExecutiveSummary.value = brief.executive_summary || "";
-    
-    inputPlanMethodology.value = brief.discovery_plan.methodology || "";
-    inputPlanSteps.value = (brief.discovery_plan.steps || []).join("\n");
+    // Escalares
+    inputTitle.value = b.opportunity.title || "";
+    inputSource.value = b.opportunity.source || "";
+    inputCustomerName.value = b.customer.name || "";
+    inputCustomerSegment.value = b.customer.segment || "";
+    inputCustomerContact.value = b.customer.contact_person || "";
+    inputConfidenceLevel.value = b.confidence_level || "Baixo";
+    inputCurrentScenario.value = b.current_scenario.description || "";
+    inputDesiredScenario.value = b.desired_scenario.description || "";
+    inputExecutiveSummary.value = b.executive_summary || "";
+    inputPlanMethodology.value = b.discovery_plan.methodology || "";
 
-    // Gaps (Lacunas)
-    displayGapsContainer.innerHTML = "";
-    if (brief.missing_information && brief.missing_information.length > 0) {
-        brief.missing_information.forEach(gap => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(28,22,18,0.015); border: 1px solid var(--border); padding: 0.5rem 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.85rem;";
-            card.innerHTML = `<strong>[${gap.area}] ${gap.id}:</strong> ${gap.description} <span style="font-size: 0.7rem; color: #C2410C; font-weight: bold; margin-left: 0.5rem;">Prioridade: ${gap.priority}</span>`;
-            displayGapsContainer.appendChild(card);
-        });
-    } else {
-        displayGapsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhum gap identificado.</p>';
-    }
+    // Listas de strings
+    renderStringList("problems", b.business_context.problems, "Descreva um problema ou dor...");
+    renderStringList("objectives", b.business_context.objectives, "Descreva um objetivo estratégico...");
+    renderStringList("motivations", b.business_context.motivations, "Descreva uma motivação...");
+    renderStringList("current_key_points", b.current_scenario.key_points, "Ponto-chave do cenário atual...");
+    renderStringList("desired_key_points", b.desired_scenario.key_points, "Ponto-chave do cenário desejado...");
+    renderStringList("scope_included", b.scope.included, "Item incluso no escopo...");
+    renderStringList("scope_excluded", b.scope.excluded, "Item fora de escopo...");
+    renderStringList("technologies", b.technologies, "Ex: AWS, Salesforce, PostgreSQL...");
+    renderStringList("constraints", b.constraints, "Restrição técnica ou de negócio...");
+    renderStringList("plan_steps", b.discovery_plan.steps, "Passo do roteiro de discovery...");
+    renderStringList("validation_metrics", b.discovery_plan.validation_metrics, "Métrica de validação...");
 
-    // Perguntas
-    displayQuestionsContainer.innerHTML = "";
-    if (brief.questions && brief.questions.length > 0) {
-        brief.questions.forEach(q => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: var(--purple-dim); border: 1px solid rgba(124,58,237,0.15); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.85rem;";
-            card.innerHTML = `
-                <div style="font-weight: 700; color: var(--purple);">${q.id}: ${q.question}</div>
-                <div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-body);">Alvo: <strong>${q.target_role || "Todos"}</strong> | Tipo: ${q.type}</div>
-                ${q.context ? `<div style="font-size: 0.75rem; margin-top: 0.25rem; font-style: italic; color: var(--text-muted);">${q.context}</div>` : ""}
-            `;
-            displayQuestionsContainer.appendChild(card);
-        });
-    } else {
-        displayQuestionsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhuma pergunta sugerida.</p>';
-    }
+    // Listas de objetos
+    renderObjectList("stakeholders", b.stakeholders, STAKEHOLDER_FIELDS, { tone: "purple" });
+    renderObjectList("assumptions", b.assumptions, ASSUMPTION_FIELDS, { tone: "amber", idPrefix: "ASM" });
+    renderObjectList("risks", b.risks, RISK_FIELDS, { tone: "red", idPrefix: "RSK" });
+    renderObjectList("missing_information", b.missing_information, GAP_FIELDS, { tone: "amber", idPrefix: "GAP" });
+    renderObjectList("questions", b.questions, QUESTION_FIELDS, { tone: "purple", idPrefix: "QST" });
+    renderObjectList("references", b.references, REFERENCE_FIELDS, { tone: "neutral", idPrefix: "REF" });
 
-    // Riscos
-    displayRisksContainer.innerHTML = "";
-    if (brief.risks && brief.risks.length > 0) {
-        brief.risks.forEach(r => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(220,38,38,0.03); border: 1px solid rgba(220,38,38,0.15); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.82rem;";
-            card.innerHTML = `
-                <div style="font-weight: 700; color: #B91C1C;">${r.id}: [${r.category}] ${r.description}</div>
-                <div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-body);">Impacto: <strong>${r.impact}</strong> | Probabilidade: <strong>${r.probability}</strong></div>
-                ${r.mitigation ? `<div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">Mitigação: ${r.mitigation}</div>` : ""}
-            `;
-            displayRisksContainer.appendChild(card);
-        });
-    } else {
-        displayRisksContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhum risco mapeado.</p>';
-    }
+    renderHistory(b.history);
+}
 
-    // Premissas
-    displayAssumptionsContainer.innerHTML = "";
-    if (brief.assumptions && brief.assumptions.length > 0) {
-        brief.assumptions.forEach(asm => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(28,22,18,0.02); border: 1px solid var(--border); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.82rem;";
-            card.innerHTML = `
-                <div><strong>${asm.id}:</strong> ${asm.description}</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Impacto no Projeto: <strong>${asm.impact}</strong></div>
-            `;
-            displayAssumptionsContainer.appendChild(card);
-        });
-    } else {
-        displayAssumptionsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhuma premissa registrada.</p>';
-    }
+/* ------------------------------------------------------------------ *
+ * Componente: lista de strings
+ * ------------------------------------------------------------------ */
+function renderStringList(mount, arr, placeholder) {
+    const container = document.querySelector(`[data-mount="${mount}"]`);
+    container.innerHTML = "";
 
-    // Histórico
-    historyContainer.innerHTML = "";
-    if (brief.history && brief.history.length > 0) {
-        // Ordena por versão decrescente para mostrar no histórico lateral
-        const historySorted = [...brief.history].reverse();
-        historySorted.forEach(h => {
-            const dateStr = new Date(h.date).toLocaleString("pt-BR", {hour: "2-digit", minute:"2-digit"});
+    const list = document.createElement("div");
+    list.className = "list-editor";
+
+    const drawRows = () => {
+        list.innerHTML = "";
+        if (arr.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "list-empty";
+            empty.innerText = "Nenhum item — clique em adicionar.";
+            list.appendChild(empty);
+        }
+        arr.forEach((val, idx) => {
             const row = document.createElement("div");
-            row.style = "border-bottom: 1px solid var(--border); padding-bottom: 0.35rem; margin-bottom: 0.35rem;";
-            row.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-weight: bold; color: var(--text);">
-                  <span>Versão ${h.version}</span>
-                  <span style="font-size: 0.7rem; color: var(--text-muted);">${dateStr}</span>
-                </div>
-                <div style="color: var(--orange-light); font-size: 0.7rem;">Por: ${h.author}</div>
-                <div style="color: var(--text-body); margin-top: 0.15rem; line-height: 1.3;">${h.changes_summary}</div>
-            `;
-            historyContainer.appendChild(row);
+            row.className = "list-row";
+            const index = document.createElement("span");
+            index.className = "row-index";
+            index.innerText = idx + 1;
+            const input = document.createElement("input");
+            input.type = "text";
+            input.className = "form-control";
+            input.value = val;
+            input.placeholder = placeholder;
+            input.addEventListener("input", () => { arr[idx] = input.value; });
+            const del = document.createElement("button");
+            del.type = "button";
+            del.className = "icon-btn";
+            del.title = "Remover";
+            del.innerHTML = "&times;";
+            del.addEventListener("click", () => { arr.splice(idx, 1); drawRows(); });
+            row.append(index, input, del);
+            list.appendChild(row);
         });
+    };
+    drawRows();
+
+    const add = document.createElement("button");
+    add.type = "button";
+    add.className = "btn-add";
+    add.innerHTML = "＋ Adicionar item";
+    add.addEventListener("click", () => {
+        arr.push("");
+        drawRows();
+        const inputs = list.querySelectorAll("input");
+        if (inputs.length) inputs[inputs.length - 1].focus();
+    });
+
+    container.append(list, add);
+}
+
+/* ------------------------------------------------------------------ *
+ * Componente: lista de objetos
+ * ------------------------------------------------------------------ */
+const STAKEHOLDER_FIELDS = [
+    { key: "name", label: "Nome", type: "text", grid: 2 },
+    { key: "role", label: "Papel / Cargo", type: "text", grid: 2 },
+    { key: "contact", label: "Contato", type: "text", grid: 1 }
+];
+const ASSUMPTION_FIELDS = [
+    { key: "description", label: "Descrição da premissa", type: "textarea", grid: 1 },
+    { key: "impact", label: "Impacto", type: "select", options: IMPACT, grid: 1 }
+];
+const RISK_FIELDS = [
+    { key: "description", label: "Descrição do risco", type: "textarea", grid: 1 },
+    { key: "category", label: "Categoria", type: "select", options: RISK_CATEGORY, grid: 3 },
+    { key: "impact", label: "Impacto", type: "select", options: IMPACT, grid: 3 },
+    { key: "probability", label: "Probabilidade", type: "select", options: PROBABILITY, grid: 3 },
+    { key: "mitigation", label: "Mitigação", type: "textarea", grid: 1 }
+];
+const GAP_FIELDS = [
+    { key: "description", label: "Descrição da lacuna", type: "textarea", grid: 1 },
+    { key: "area", label: "Área", type: "select", options: GAP_AREA, grid: 2 },
+    { key: "priority", label: "Prioridade", type: "select", options: PRIORITY, grid: 2 }
+];
+const QUESTION_FIELDS = [
+    { key: "question", label: "Pergunta", type: "textarea", grid: 1 },
+    { key: "type", label: "Tipo", type: "select", options: QUESTION_TYPE, grid: 2 },
+    { key: "target_role", label: "Stakeholder alvo", type: "text", grid: 2 },
+    { key: "context", label: "Contexto / justificativa", type: "textarea", grid: 1 }
+];
+const REFERENCE_FIELDS = [
+    { key: "type", label: "Tipo", type: "select", options: REFERENCE_TYPE, grid: 2 },
+    { key: "source", label: "Fonte / arquivo", type: "text", grid: 2 }
+];
+
+function nextId(arr, prefix) {
+    let max = 0;
+    arr.forEach(it => {
+        const m = (it.id || "").match(new RegExp(`${prefix}-(\\d+)`));
+        if (m) max = Math.max(max, parseInt(m[1], 10));
+    });
+    return `${prefix}-${String(max + 1).padStart(2, "0")}`;
+}
+
+function blankItem(fields, arr, idPrefix) {
+    const item = {};
+    if (idPrefix) item.id = nextId(arr, idPrefix);
+    fields.forEach(f => {
+        item[f.key] = f.type === "select" ? (f.options[0] || "") : "";
+    });
+    return item;
+}
+
+function renderObjectList(mount, arr, fields, opts = {}) {
+    const container = document.querySelector(`[data-mount="${mount}"]`);
+    container.innerHTML = "";
+    const tone = opts.tone || "neutral";
+    const idPrefix = opts.idPrefix;
+
+    const draw = () => {
+        container.innerHTML = "";
+        if (arr.length === 0) {
+            const empty = document.createElement("div");
+            empty.className = "list-empty";
+            empty.innerText = "Nenhum registro — clique em adicionar.";
+            container.appendChild(empty);
+        }
+        arr.forEach((item, idx) => {
+            container.appendChild(buildObjItem(item, idx, fields, arr, tone, idPrefix, draw));
+        });
+        const add = document.createElement("button");
+        add.type = "button";
+        add.className = `btn-add ${tone === "purple" ? "purple" : ""}`;
+        add.innerHTML = "＋ Adicionar";
+        add.addEventListener("click", () => { arr.push(blankItem(fields, arr, idPrefix)); draw(); });
+        container.appendChild(add);
+    };
+    draw();
+}
+
+function buildObjItem(item, idx, fields, arr, tone, idPrefix, redraw) {
+    const card = document.createElement("div");
+    card.className = `obj-item tone-${tone}`;
+
+    const head = document.createElement("div");
+    head.className = "obj-item-head";
+    const tag = document.createElement("span");
+    tag.className = "obj-tag";
+    tag.innerText = item.id || `#${idx + 1}`;
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "icon-btn";
+    del.title = "Remover";
+    del.innerHTML = "&times;";
+    del.addEventListener("click", () => { arr.splice(idx, 1); redraw(); });
+    head.append(tag, del);
+    card.appendChild(head);
+
+    // Agrupa campos por linhas conforme "grid"
+    let i = 0;
+    while (i < fields.length) {
+        const f = fields[i];
+        if (f.grid && f.grid > 1) {
+            // agrupa campos consecutivos com o mesmo grid
+            const rowFields = [];
+            while (i < fields.length && fields[i].grid === f.grid) { rowFields.push(fields[i]); i++; }
+            const rowWrap = document.createElement("div");
+            rowWrap.className = f.grid === 3 ? "card-grid-3" : "card-grid-2";
+            rowFields.forEach(rf => rowWrap.appendChild(buildField(rf, item)));
+            card.appendChild(rowWrap);
+        } else {
+            card.appendChild(buildField(f, item));
+            i++;
+        }
     }
+    return card;
 }
 
-// Serializar Dados do Formulário para enviar no Save
-function serializeBriefFromForm() {
-    const listFromTextarea = (val) => val.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-    const commaSeparated = (val) => val.split(",").map(i => i.trim()).filter(i => i.length > 0);
+function buildField(f, item) {
+    const group = document.createElement("div");
+    group.className = "form-group";
+    const label = document.createElement("label");
+    label.className = "field-label";
+    label.innerText = f.label;
+    group.appendChild(label);
 
-    // Mantém estruturas estáticas que não são editadas diretamente no formulário
-    const brief = JSON.parse(JSON.stringify(activeOpportunity));
-
-    brief.opportunity.title = inputTitle.value;
-    brief.customer.name = inputCustomerName.value;
-    brief.customer.segment = inputCustomerSegment.value;
-    brief.confidence_level = inputConfidenceLevel.value;
-
-    brief.business_context.problems = listFromTextarea(inputProblems.value);
-    brief.current_scenario.description = inputCurrentScenario.value;
-    brief.desired_scenario.description = inputDesiredScenario.value;
-
-    brief.scope.included = listFromTextarea(inputScopeIncluded.value);
-    brief.scope.excluded = listFromTextarea(inputScopeExcluded.value);
-
-    brief.technologies = commaSeparated(inputTechnologies.value);
-    brief.constraints = listFromTextarea(inputConstraints.value);
-
-    brief.executive_summary = inputExecutiveSummary.value;
-
-    brief.discovery_plan.methodology = inputPlanMethodology.value;
-    brief.discovery_plan.steps = listFromTextarea(inputPlanSteps.value);
-
-    return brief;
+    let control;
+    if (f.type === "select") {
+        control = document.createElement("select");
+        control.className = "form-control";
+        f.options.forEach(opt => {
+            const o = document.createElement("option");
+            o.value = opt; o.innerText = opt;
+            control.appendChild(o);
+        });
+        control.value = item[f.key] ?? f.options[0];
+    } else if (f.type === "textarea") {
+        control = document.createElement("textarea");
+        control.className = "form-control";
+        control.style.height = "64px";
+        control.value = item[f.key] ?? "";
+    } else {
+        control = document.createElement("input");
+        control.type = "text";
+        control.className = "form-control";
+        control.value = item[f.key] ?? "";
+    }
+    control.addEventListener("input", () => { item[f.key] = control.value; });
+    control.addEventListener("change", () => { item[f.key] = control.value; });
+    group.appendChild(control);
+    return group;
 }
 
-// Carregar Artigos da KB
+/* ------------------------------------------------------------------ *
+ * Histórico
+ * ------------------------------------------------------------------ */
+function renderHistory(history) {
+    historyContainer.innerHTML = "";
+    if (!history || history.length === 0) {
+        historyContainer.innerHTML = `<div class="list-empty">Sem histórico ainda.</div>`;
+        return;
+    }
+    [...history].reverse().forEach(h => {
+        const dateStr = new Date(h.date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+        const row = document.createElement("div");
+        row.className = "history-row";
+        row.innerHTML = `
+            <div class="h-top"><span class="h-ver">Versão ${h.version}</span><span class="h-date">${dateStr}</span></div>
+            <div class="h-author">${escapeHtml(h.author)}</div>
+            <div class="h-sum">${escapeHtml(h.changes_summary)}</div>`;
+        historyContainer.appendChild(row);
+    });
+}
+
+/* ------------------------------------------------------------------ *
+ * Knowledge Base
+ * ------------------------------------------------------------------ */
 async function loadKbArticles(searchQuery = "") {
     try {
         const url = searchQuery ? `${API_BASE}/api/kb?q=${encodeURIComponent(searchQuery)}` : `${API_BASE}/api/kb`;
         const response = await fetch(url);
         if (!response.ok) throw new Error();
         const data = await response.json();
-        
+
         kbResultsContainer.innerHTML = "";
-        
         if (!data.kb_context || data.kb_context.includes("Nenhum artigo")) {
-            kbResultsContainer.innerHTML = `
-                <div style="text-align: center; color: var(--text-muted); padding: 1rem;">
-                    Nenhum artigo correspondente encontrado.
-                </div>`;
+            kbResultsContainer.innerHTML = `<div class="list-empty">Nenhum artigo correspondente.</div>`;
             return;
         }
 
-        // Divide a string agregada do backend para exibir individualmente
         const articles = data.kb_context.split("---").map(a => a.trim()).filter(a => a.length > 0);
-        
         articles.forEach(art => {
             const lines = art.split("\n");
-            const titleLine = lines[0] || "Artigo";
-            const catLine = lines[1] || "Categoria";
-            const contentLine = lines.slice(2).join("\n");
-            
+            const titleLine = (lines[0] || "Artigo").replace("Artigo: ", "");
+            const catLine = lines[1] || "";
+            const contentLine = lines.slice(2).join("\n").replace("Conteúdo: ", "");
             const card = document.createElement("div");
-            card.style = "background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem; box-shadow: 0 1px 3px rgba(0,0,0,0.01);";
+            card.className = "kb-card";
             card.innerHTML = `
-                <strong style="color: var(--text);">${titleLine.replace("Artigo: ", "")}</strong>
-                <div style="font-size: 0.7rem; color: var(--orange-light); margin: 0.15rem 0;">${catLine}</div>
-                <p style="color: var(--text-body); font-size: 0.75rem; line-height: 1.4;">${contentLine.replace("Conteúdo: ", "")}</p>
-            `;
+                <strong>${escapeHtml(titleLine)}</strong>
+                <div class="kb-cat">${escapeHtml(catLine)}</div>
+                <p>${escapeHtml(contentLine)}</p>`;
             kbResultsContainer.appendChild(card);
         });
     } catch (e) {
         console.error("Erro ao listar KB", e);
     }
-}
-
-// Auxiliar Debounce
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
 }
