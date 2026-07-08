@@ -23,6 +23,15 @@ Seu objetivo é demonstrar como uma oportunidade comercial evolui desde sua entr
 
 As regras de negócio detalhadas estão documentadas em **business-rules.md**.
 
+
+## Contexto do Processo
+
+O processo de discovery faz parte do fluxo completo de gestão de oportunidades comerciais da organização.
+
+O Discovery Copilot AI atua especificamente na preparação e execução do discovery, porém considera o contexto das etapas anteriores e posteriores para produzir recomendações mais precisas.
+
+O processo contempla desde a qualificação inicial da oportunidade até sua transição para as etapas comerciais e de pós-venda.
+
 ---
 
 # Visão Geral do Processo
@@ -288,46 +297,88 @@ Novas informações obtidas durante a reunião retroalimentam o Canonical Brief.
 # Fluxo Conceitual
 
 ```text
-Oportunidade
-      │
-      ▼
-Interpretar Briefing
-      │
-      ▼
-Atualizar Canonical Brief
-      │
-      ▼
-Classificar Oportunidade
-      │
-      ▼
-Consultar Knowledge Base
-      │
-      ▼
-Identificar Lacunas
-      │
-      ▼
-Gerar Perguntas
-      │
-      ▼
-Gerar Premissas
-      │
-      ▼
-Identificar Riscos
-      │
-      ▼
-Executive Summary
-      │
-      ▼
-Discovery Plan
-      │
-      ▼
-Revisão Humana
-      │
-      ▼
+Lead
+
+↓
+
+Qualificação Comercial
+
+↓
+
+Qualificação Técnica
+
+↓
+
+Preparação do Briefing
+
+↓
+
+Padronização do Briefing
+
+↓
+
+Interpretação do Briefing
+
+↓
+
+Classificação da Oportunidade
+
+↓
+
+Consulta à Knowledge Base
+
+↓
+
+Identificação de Lacunas
+
+↓
+
+Geração de Perguntas
+
+↓
+
+Geração de Premissas
+
+↓
+
+Geração de Riscos
+
+↓
+
+Revisão do Analista
+
+↓
+
 Discovery
-      │
-      ▼
-Atualização do Canonical Brief
+
+↓
+
+Definição Técnica da Solução
+
+↓
+
+Cotação
+
+↓
+
+Precificação
+
+↓
+
+Proposta Técnica
+
+↓
+
+Proposta Comercial
+
+↓
+
+Contrato
+
+↓
+
+Pós-Venda
+
 ```
 
 ---
@@ -393,6 +444,21 @@ Ao término do processo, o produto disponibiliza:
 | Discovery | Humana |
 
 ---
+
+
+## Integração com a Matriz de Responsabilidades
+
+Cada atividade do processo possui responsáveis definidos conforme a matriz RACI corporativa.
+
+O Discovery Copilot AI poderá utilizar essa matriz para:
+
+- identificar participantes obrigatórios;
+- sugerir consultas a especialistas;
+- indicar responsáveis por determinada atividade;
+- informar aprovações necessárias;
+- contextualizar recomendações conforme o papel de cada ator.
+
+A definição detalhada da matriz encontra-se na Knowledge Base corporativa.
 
 # Documentos Relacionados
 

@@ -281,6 +281,45 @@ Feedbacks do analista poderão ser utilizados para melhoria contínua do produto
 
 ---
 
+# Regras de Papéis e Responsabilidades
+
+## BR-083 — Matriz de Responsabilidades
+
+As atividades do processo de Pré-Vendas deverão respeitar a matriz de responsabilidades (RACI) definida pela organização.
+
+Quando uma atividade possuir responsáveis definidos, o Discovery Copilot AI deverá utilizar essa informação para contextualizar suas recomendações.
+
+---
+
+## BR-084 — Identificação dos Papéis
+
+Sempre que possível, o Discovery Copilot AI deverá identificar os papéis organizacionais envolvidos na atividade em análise.
+
+Essa identificação poderá incluir:
+
+- Responsável (Responsible);
+- Aprovador (Approver);
+- Consultado (Consulted);
+- Informado (Informed).
+
+---
+
+## BR-085 — Recomendações Contextualizadas
+
+As recomendações produzidas pela IA deverão considerar a etapa do processo e os papéis envolvidos.
+
+Quando uma recomendação depender da participação de outro ator organizacional, essa dependência deverá ser explicitada ao analista.
+
+---
+
+## BR-086 — Governança Organizacional
+
+O Discovery Copilot AI não poderá alterar, substituir ou redefinir responsabilidades estabelecidas pela organização.
+
+A matriz RACI é considerada uma referência oficial do processo corporativo.
+
+---
+
 # Regras de Governança
 
 ## BR-090 — Auditoria
@@ -340,6 +379,7 @@ A IA não deverá assumir decisões comerciais, técnicas ou contratuais.
 | BR-040 a BR-044 | canonical-brief.md |
 | BR-050 a BR-071 | specification.md |
 | BR-080 a BR-082 | process.md |
+| BR-083 a BR-086 | process.md / domain-model.md / specification.md |
 | BR-090 a BR-103 | non-functional-requirements.md |
 
 ---

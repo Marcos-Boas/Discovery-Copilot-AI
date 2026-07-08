@@ -64,6 +64,9 @@
           <button class="btn btn-secondary" id="btn-enrich">
             ✨ Enriquecer com IA & KB
           </button>
+          <button class="btn btn-secondary" id="btn-export">
+            📥 Exportar
+          </button>
           <button class="btn btn-primary" id="btn-save">
             💾 Salvar & Validar
           </button>
@@ -161,16 +164,24 @@
             <!-- Bloco 5: Gaps & Perguntas de Discovery -->
             <div class="section-card">
               <h3>Lacunas (Gaps) & Perguntas Geradas para Reunião</h3>
+              
               <div class="form-group">
-                <label>Gaps de Informação Detectados:</label>
-                <div id="display-gaps-container" style="margin-bottom: 1rem;">
-                  <!-- Injetado via JS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <label style="margin: 0;">Gaps de Informação Detectados</label>
+                  <button type="button" class="btn btn-secondary" id="btn-add-gap" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Adicionar Gap</button>
+                </div>
+                <div id="gaps-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Cards de gaps serão injetados via JS -->
                 </div>
               </div>
+              
               <div class="form-group">
-                <label>Perguntas Sugeridas para Validação:</label>
-                <div id="display-questions-container">
-                  <!-- Injetado via JS -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <label style="margin: 0;">Perguntas Sugeridas para Validação</label>
+                  <button type="button" class="btn btn-secondary" id="btn-add-question" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Adicionar Pergunta</button>
+                </div>
+                <div id="questions-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Cards de perguntas serão injetados via JS -->
                 </div>
               </div>
             </div>
@@ -178,14 +189,24 @@
             <!-- Bloco 6: Riscos e Premissas -->
             <div class="section-card">
               <h3>Análise de Riscos & Premissas</h3>
-              <div class="card-grid-2">
-                <div>
-                  <label for="display-risks-container" class="sans" style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Riscos Identificados:</label>
-                  <div id="display-risks-container"></div>
+              
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <label style="margin: 0;">Riscos Identificados</label>
+                  <button type="button" class="btn btn-secondary" id="btn-add-risk" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Adicionar Risco</button>
                 </div>
-                <div>
-                  <label for="display-assumptions-container" class="sans" style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.5rem;">Premissas Documentadas:</label>
-                  <div id="display-assumptions-container"></div>
+                <div id="risks-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Cards de riscos serão injetados via JS -->
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <label style="margin: 0;">Premissas Documentadas</label>
+                  <button type="button" class="btn btn-secondary" id="btn-add-assumption" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Adicionar Premissa</button>
+                </div>
+                <div id="assumptions-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Cards de premissas serão injetados via JS -->
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 /* app.js · Discovery Copilot UI · Lógica do Frontend Vanilla JS */
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = window.location.origin.includes("localhost") ? "http://localhost:8000" : window.location.origin;
 let activeOpportunity = null;
 
 // Elementos da DOM
@@ -20,6 +20,7 @@ const uploadForm = document.getElementById("upload-form");
 
 // Botões de Ação
 const btnEnrich = document.getElementById("btn-enrich");
+const btnExport = document.getElementById("btn-export");
 const btnSave = document.getElementById("btn-save");
 
 // Elementos de Exibição do Cabeçalho
@@ -54,11 +55,17 @@ const inputExecutiveSummary = document.getElementById("input-executive-summary")
 const inputPlanMethodology = document.getElementById("input-plan-methodology");
 const inputPlanSteps = document.getElementById("input-plan-steps");
 
-// Containers de Lists no Form
-const displayGapsContainer = document.getElementById("display-gaps-container");
-const displayQuestionsContainer = document.getElementById("display-questions-container");
-const displayRisksContainer = document.getElementById("display-risks-container");
-const displayAssumptionsContainer = document.getElementById("display-assumptions-container");
+// Containers de cards editáveis
+const gapsContainer = document.getElementById("gaps-container");
+const questionsContainer = document.getElementById("questions-container");
+const risksContainer = document.getElementById("risks-container");
+const assumptionsContainer = document.getElementById("assumptions-container");
+
+// Botões de adicionar
+const btnAddGap = document.getElementById("btn-add-gap");
+const btnAddQuestion = document.getElementById("btn-add-question");
+const btnAddRisk = document.getElementById("btn-add-risk");
+const btnAddAssumption = document.getElementById("btn-add-assumption");
 
 // Inicialização
 document.addEventListener("DOMContentLoaded", () => {
@@ -85,14 +92,185 @@ function setupEventListeners() {
         await createOpportunity(text, source);
     });
 
-    // Enriquecer e Salvar
+    // Enriquecer, Exportar e Salvar
     btnEnrich.addEventListener("click", enrichOpportunity);
+    btnExport.addEventListener("click", exportBrief);
     btnSave.addEventListener("click", saveAndValidateOpportunity);
 
     // Pesquisa KB
     kbSearchInput.addEventListener("input", debounce(() => {
         loadKbArticles(kbSearchInput.value);
     }, 300));
+
+    // Cards editáveis
+    btnAddGap.addEventListener("click", () => addGapCard());
+    btnAddQuestion.addEventListener("click", () => addQuestionCard());
+    btnAddRisk.addEventListener("click", () => addRiskCard());
+    btnAddAssumption.addEventListener("click", () => addAssumptionCard());
+}
+
+// Funções para Cards Editáveis
+function generateId() {
+    return 'ID-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+}
+
+function createCardHeader(title, onRemove) {
+    const header = document.createElement('div');
+    header.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;';
+    
+    const label = document.createElement('label');
+    label.textContent = title;
+    label.style.cssText = 'font-size: 0.8rem; font-weight: 600; color: var(--text-body); margin: 0;';
+    
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '✕';
+    removeBtn.className = 'btn btn-secondary';
+    removeBtn.style.cssText = 'width: auto; padding: 0.3rem 0.6rem; font-size: 0.75rem; min-width: 32px;';
+    removeBtn.addEventListener('click', onRemove);
+    
+    header.appendChild(label);
+    header.appendChild(removeBtn);
+    return header;
+}
+
+function createInput(placeholder, value = '', style = '') {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'form-control';
+    input.placeholder = placeholder;
+    input.value = value;
+    if (style) input.style.cssText = style;
+    return input;
+}
+
+function createSelect(options, value = '') {
+    const select = document.createElement('select');
+    select.className = 'form-control';
+    options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt;
+        if (opt === value) option.selected = true;
+        select.appendChild(option);
+    });
+    return select;
+}
+
+function addGapCard(gap = null) {
+    const card = document.createElement('div');
+    card.className = 'editable-card';
+    card.style.cssText = 'background: rgba(28,22,18,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; transition: all 0.2s ease;';
+    
+    const id = gap ? gap.id : generateId();
+    
+    card.appendChild(createCardHeader('Gap de Informação', () => card.remove()));
+    
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;';
+    
+    grid.appendChild(createInput('Área', gap ? gap.area : ''));
+    grid.appendChild(createSelect(['Alta', 'Média', 'Baixa'], gap ? gap.priority : ''));
+    card.appendChild(grid);
+    
+    const descInput = document.createElement('textarea');
+    descInput.className = 'form-control';
+    descInput.placeholder = 'Descrição do gap...';
+    descInput.value = gap ? gap.description : '';
+    descInput.style.cssText = 'min-height: 60px; resize: vertical;';
+    card.appendChild(descInput);
+    
+    card.dataset.id = id;
+    gapsContainer.appendChild(card);
+}
+
+function addQuestionCard(question = null) {
+    const card = document.createElement('div');
+    card.className = 'editable-card';
+    card.style.cssText = 'background: var(--purple-dim); border: 1px solid var(--border-purple); border-radius: 8px; padding: 1rem; transition: all 0.2s ease;';
+    
+    const id = question ? question.id : generateId();
+    
+    card.appendChild(createCardHeader('Pergunta de Validação', () => card.remove()));
+    
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;';
+    
+    grid.appendChild(createSelect(['Aberta', 'Fechada', 'Múltipla Escolha'], question ? question.type : 'Aberta'));
+    grid.appendChild(createInput('Alvo (papel)', question ? question.target_role : ''));
+    card.appendChild(grid);
+    
+    const descInput = document.createElement('textarea');
+    descInput.className = 'form-control';
+    descInput.placeholder = 'Pergunta...';
+    descInput.value = question ? question.question : '';
+    descInput.style.cssText = 'min-height: 60px; resize: vertical; margin-bottom: 0.75rem;';
+    card.appendChild(descInput);
+    
+    const ctxInput = document.createElement('input');
+    ctxInput.type = 'text';
+    ctxInput.className = 'form-control';
+    ctxInput.placeholder = 'Contexto adicional (opcional)';
+    ctxInput.value = question ? question.context || '' : '';
+    card.appendChild(ctxInput);
+    
+    card.dataset.id = id;
+    questionsContainer.appendChild(card);
+}
+
+function addRiskCard(risk = null) {
+    const card = document.createElement('div');
+    card.className = 'editable-card';
+    card.style.cssText = 'background: rgba(220,38,38,0.03); border: 1px solid rgba(220,38,38,0.15); border-radius: 8px; padding: 1rem; transition: all 0.2s ease;';
+    
+    const id = risk ? risk.id : generateId();
+    
+    card.appendChild(createCardHeader('Risco Identificado', () => card.remove()));
+    
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;';
+    
+    grid.appendChild(createSelect(['Técnico', 'Comercial', 'Operacional', 'Financeiro', 'Legal'], risk ? risk.category : ''));
+    grid.appendChild(createSelect(['Alto', 'Médio', 'Baixo'], risk ? risk.probability : ''));
+    card.appendChild(grid);
+    
+    const descInput = document.createElement('textarea');
+    descInput.className = 'form-control';
+    descInput.placeholder = 'Descrição do risco...';
+    descInput.value = risk ? risk.description : '';
+    descInput.style.cssText = 'min-height: 60px; resize: vertical; margin-bottom: 0.75rem;';
+    card.appendChild(descInput);
+    
+    const grid2 = document.createElement('div');
+    grid2.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;';
+    grid2.appendChild(createInput('Impacto', risk ? risk.impact : ''));
+    grid2.appendChild(createInput('Mitigação', risk ? risk.mitigation : ''));
+    card.appendChild(grid2);
+    
+    card.dataset.id = id;
+    risksContainer.appendChild(card);
+}
+
+function addAssumptionCard(assumption = null) {
+    const card = document.createElement('div');
+    card.className = 'editable-card';
+    card.style.cssText = 'background: rgba(28,22,18,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; transition: all 0.2s ease;';
+    
+    const id = assumption ? assumption.id : generateId();
+    
+    card.appendChild(createCardHeader('Premissa Documentada', () => card.remove()));
+    
+    const descInput = document.createElement('textarea');
+    descInput.className = 'form-control';
+    descInput.placeholder = 'Descrição da premissa...';
+    descInput.value = assumption ? assumption.description : '';
+    descInput.style.cssText = 'min-height: 60px; resize: vertical; margin-bottom: 0.75rem;';
+    card.appendChild(descInput);
+    
+    card.appendChild(createInput('Impacto no Projeto', assumption ? assumption.impact : ''));
+    
+    card.dataset.id = id;
+    assumptionsContainer.appendChild(card);
 }
 
 // Utilitários de Requisição
@@ -235,7 +413,7 @@ async function saveAndValidateOpportunity() {
     try {
         const oppId = activeOpportunity.opportunity.id;
         const briefData = serializeBriefFromForm();
-        
+
         const response = await fetch(`${API_BASE}/api/opportunities/${oppId}/validate`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -243,7 +421,7 @@ async function saveAndValidateOpportunity() {
         });
         if (!response.ok) throw new Error();
         const brief = await response.json();
-        
+
         activeOpportunity = brief;
         await loadOpportunities();
         renderBriefEditor(brief);
@@ -253,6 +431,168 @@ async function saveAndValidateOpportunity() {
     } finally {
         hideLoader();
     }
+}
+
+// Exportar Briefing
+function exportBrief() {
+    if (!activeOpportunity) {
+        alert("Nenhuma oportunidade selecionada para exportar.");
+        return;
+    }
+
+    const brief = activeOpportunity;
+    const markdown = generateMarkdownExport(brief);
+
+    const blob = new Blob([markdown], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `briefing-${brief.opportunity.id}-${new Date().toISOString().split('T')[0]}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function generateMarkdownExport(brief) {
+    return `# Discovery Brief: ${brief.opportunity.title}
+
+**Cliente:** ${brief.customer.name}  
+**Segmento:** ${brief.customer.segment || "N/A"}  
+**ID:** ${brief.opportunity.id}  
+**Versão:** v${brief.context_version}  
+**Status:** ${brief.opportunity.status}  
+**Origem:** ${brief.opportunity.source}  
+**Criado em:** ${new Date(brief.opportunity.created_at).toLocaleString("pt-BR")}  
+**Nível de Confiança:** ${brief.confidence_level}
+
+---
+
+## Contexto de Negócio
+
+### Problemas Identificados
+${brief.business_context.problems.map(p => `- ${p}`).join("\n") || "Nenhum problema identificado."}
+
+### Objetivos
+${brief.business_context.objectives.map(o => `- ${o}`).join("\n") || "Nenhum objetivo definido."}
+
+### Motivações
+${brief.business_context.motivations.map(m => `- ${m}`).join("\n") || "Nenhuma motivação registrada."}
+
+---
+
+## Cenário Atual
+${brief.current_scenario.description || "Não descrito."}
+
+### Pontos Chave
+${brief.current_scenario.key_points.map(p => `- ${p}`).join("\n") || "Nenhum ponto chave."}
+
+---
+
+## Cenário Desejado
+${brief.desired_scenario.description || "Não descrito."}
+
+### Pontos Chave
+${brief.desired_scenario.key_points.map(p => `- ${p}`).join("\n") || "Nenhum ponto chave."}
+
+---
+
+## Escopo
+
+### Incluído
+${brief.scope.included.map(i => `- ${i}`).join("\n") || "Nada definido."}
+
+### Excluído
+${brief.scope.excluded.map(e => `- ${e}`).join("\n") || "Nada definido."}
+
+---
+
+## Tecnologias
+${brief.technologies.map(t => `- ${t}`).join("\n") || "Nenhuma tecnologia listada."}
+
+---
+
+## Restrições
+${brief.constraints.map(c => `- ${c}`).join("\n") || "Nenhuma restrição."}
+
+---
+
+## Lacunas de Informação (Gaps)
+${brief.missing_information.map(g => `
+### ${g.id} [${g.area}] - Prioridade: ${g.priority}
+${g.description}
+`).join("\n") || "Nenhuma lacuna identificada."}
+
+---
+
+## Perguntas de Discovery
+${brief.questions.map(q => `
+### ${q.id} [${q.type}]
+**Pergunta:** ${q.question}
+**Alvo:** ${q.target_role || "Todos"}
+**Contexto:** ${q.context || "N/A"}
+`).join("\n") || "Nenhuma pergunta sugerida."}
+
+---
+
+## Riscos
+${brief.risks.map(r => `
+### ${r.id} [${r.category}]
+**Descrição:** ${r.description}
+**Impacto:** ${r.impact}
+**Probabilidade:** ${r.probability}
+**Mitigação:** ${r.mitigation || "Nenhuma mitigação proposta."}
+`).join("\n") || "Nenhum risco identificado."}
+
+---
+
+## Premissas
+${brief.assumptions.map(a => `
+### ${a.id}
+**Descrição:** ${a.description}
+**Impacto no Projeto:** ${a.impact}
+`).join("\n") || "Nenhuma premissa registrada."}
+
+---
+
+## Resumo Executivo
+${brief.executive_summary || "Não gerado."}
+
+---
+
+## Plano de Discovery
+
+### Metodologia
+${brief.discovery_plan.methodology || "Não definida."}
+
+### Passos
+${brief.discovery_plan.steps.map(s => `${s}`).join("\n") || "Nenhum passo definido."}
+
+### Métricas de Validação
+${brief.discovery_plan.validation_metrics.map(m => `- ${m}`).join("\n") || "Nenhuma métrica definida."}
+
+---
+
+## Stakeholders
+${brief.stakeholders.map(s => `
+### ${s.name}
+**Papel:** ${s.role}
+**Contato:** ${s.contact || "N/A"}
+`).join("\n") || "Nenhum stakeholder listado."}
+
+---
+
+## Histórico de Versões
+${brief.history.map(h => `
+### v${h.version} - ${new Date(h.date).toLocaleString("pt-BR")}
+**Autor:** ${h.author}
+**Resumo:** ${h.changes_summary}
+`).join("\n")}
+
+---
+
+*Gerado pelo Discovery Copilot AI - Onion Mini v2.0*
+`;
 }
 
 // Renderizar Formulário com dados do Brief
@@ -292,72 +632,17 @@ function renderBriefEditor(brief) {
     inputPlanMethodology.value = brief.discovery_plan.methodology || "";
     inputPlanSteps.value = (brief.discovery_plan.steps || []).join("\n");
 
-    // Gaps (Lacunas)
-    displayGapsContainer.innerHTML = "";
-    if (brief.missing_information && brief.missing_information.length > 0) {
-        brief.missing_information.forEach(gap => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(28,22,18,0.015); border: 1px solid var(--border); padding: 0.5rem 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.85rem;";
-            card.innerHTML = `<strong>[${gap.area}] ${gap.id}:</strong> ${gap.description} <span style="font-size: 0.7rem; color: #C2410C; font-weight: bold; margin-left: 0.5rem;">Prioridade: ${gap.priority}</span>`;
-            displayGapsContainer.appendChild(card);
-        });
-    } else {
-        displayGapsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhum gap identificado.</p>';
-    }
+    // Gaps (Lacunas) - formato: ID|Área|Prioridade|Descrição
+    inputGaps.value = (brief.missing_information || []).map(g => `${g.id}|${g.area}|${g.priority}|${g.description}`).join("\n");
 
-    // Perguntas
-    displayQuestionsContainer.innerHTML = "";
-    if (brief.questions && brief.questions.length > 0) {
-        brief.questions.forEach(q => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: var(--purple-dim); border: 1px solid rgba(124,58,237,0.15); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.85rem;";
-            card.innerHTML = `
-                <div style="font-weight: 700; color: var(--purple);">${q.id}: ${q.question}</div>
-                <div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-body);">Alvo: <strong>${q.target_role || "Todos"}</strong> | Tipo: ${q.type}</div>
-                ${q.context ? `<div style="font-size: 0.75rem; margin-top: 0.25rem; font-style: italic; color: var(--text-muted);">${q.context}</div>` : ""}
-            `;
-            displayQuestionsContainer.appendChild(card);
-        });
-    } else {
-        displayQuestionsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhuma pergunta sugerida.</p>';
-    }
+    // Perguntas - formato: ID|Tipo|Pergunta|Alvo|Contexto
+    inputQuestions.value = (brief.questions || []).map(q => `${q.id}|${q.type}|${q.question}|${q.target_role || ""}|${q.context || ""}`).join("\n");
 
-    // Riscos
-    displayRisksContainer.innerHTML = "";
-    if (brief.risks && brief.risks.length > 0) {
-        brief.risks.forEach(r => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(220,38,38,0.03); border: 1px solid rgba(220,38,38,0.15); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.82rem;";
-            card.innerHTML = `
-                <div style="font-weight: 700; color: #B91C1C;">${r.id}: [${r.category}] ${r.description}</div>
-                <div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-body);">Impacto: <strong>${r.impact}</strong> | Probabilidade: <strong>${r.probability}</strong></div>
-                ${r.mitigation ? `<div style="font-size: 0.75rem; margin-top: 0.25rem; color: var(--text-muted);">Mitigação: ${r.mitigation}</div>` : ""}
-            `;
-            displayRisksContainer.appendChild(card);
-        });
-    } else {
-        displayRisksContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhum risco mapeado.</p>';
-    }
+    // Riscos - formato: ID|Categoria|Descrição|Impacto|Probabilidade|Mitigação
+    inputRisks.value = (brief.risks || []).map(r => `${r.id}|${r.category}|${r.description}|${r.impact}|${r.probability}|${r.mitigation || ""}`).join("\n");
 
-    // Premissas
-    displayAssumptionsContainer.innerHTML = "";
-    if (brief.assumptions && brief.assumptions.length > 0) {
-        brief.assumptions.forEach(asm => {
-            const card = document.createElement("div");
-            card.className = "sans";
-            card.style = "background: rgba(28,22,18,0.02); border: 1px solid var(--border); padding: 0.65rem 0.85rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.82rem;";
-            card.innerHTML = `
-                <div><strong>${asm.id}:</strong> ${asm.description}</div>
-                <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">Impacto no Projeto: <strong>${asm.impact}</strong></div>
-            `;
-            displayAssumptionsContainer.appendChild(card);
-        });
-    } else {
-        displayAssumptionsContainer.innerHTML = '<p class="sans" style="font-size: 0.8rem; color: var(--text-muted);">Nenhuma premissa registrada.</p>';
-    }
+    // Premissas - formato: ID|Descrição|Impacto
+    inputAssumptions.value = (brief.assumptions || []).map(a => `${a.id}|${a.description}|${a.impact}`).join("\n");
 
     // Histórico
     historyContainer.innerHTML = "";
@@ -408,6 +693,64 @@ function serializeBriefFromForm() {
 
     brief.discovery_plan.methodology = inputPlanMethodology.value;
     brief.discovery_plan.steps = listFromTextarea(inputPlanSteps.value);
+
+    // Parse Gaps - formato: ID|Área|Prioridade|Descrição
+    brief.missing_information = listFromTextarea(inputGaps.value).map(line => {
+        const parts = line.split("|");
+        if (parts.length >= 4) {
+            return {
+                id: parts[0].trim(),
+                area: parts[1].trim(),
+                priority: parts[2].trim(),
+                description: parts.slice(3).join("|").trim()
+            };
+        }
+        return null;
+    }).filter(g => g !== null);
+
+    // Parse Perguntas - formato: ID|Tipo|Pergunta|Alvo|Contexto
+    brief.questions = listFromTextarea(inputQuestions.value).map(line => {
+        const parts = line.split("|");
+        if (parts.length >= 3) {
+            return {
+                id: parts[0].trim(),
+                type: parts[1].trim(),
+                question: parts[2].trim(),
+                target_role: parts[3] ? parts[3].trim() : null,
+                context: parts[4] ? parts[4].trim() : null
+            };
+        }
+        return null;
+    }).filter(q => q !== null);
+
+    // Parse Riscos - formato: ID|Categoria|Descrição|Impacto|Probabilidade|Mitigação
+    brief.risks = listFromTextarea(inputRisks.value).map(line => {
+        const parts = line.split("|");
+        if (parts.length >= 5) {
+            return {
+                id: parts[0].trim(),
+                category: parts[1].trim(),
+                description: parts[2].trim(),
+                impact: parts[3].trim(),
+                probability: parts[4].trim(),
+                mitigation: parts[5] ? parts[5].trim() : null
+            };
+        }
+        return null;
+    }).filter(r => r !== null);
+
+    // Parse Premissas - formato: ID|Descrição|Impacto
+    brief.assumptions = listFromTextarea(inputAssumptions.value).map(line => {
+        const parts = line.split("|");
+        if (parts.length >= 3) {
+            return {
+                id: parts[0].trim(),
+                description: parts[1].trim(),
+                impact: parts[2].trim()
+            };
+        }
+        return null;
+    }).filter(a => a !== null);
 
     return brief;
 }

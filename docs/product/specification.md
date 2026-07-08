@@ -83,6 +83,7 @@ Todas as funcionalidades descritas neste documento consultam ou enriquecem esse 
 | CF-08 | Identificar Riscos |
 | CF-09 | Produzir Executive Summary |
 | CF-10 | Produzir Discovery Plan |
+| CF-11 | Identificar Papéis e Responsabilidades |
 
 ---
 
@@ -312,6 +313,38 @@ Gerar o roteiro estruturado que apoiará a reunião de discovery.
 - riscos;
 - próximos passos.
 
+---
+
+## CF-11 — Identificar Papéis e Responsabilidades
+
+### Objetivo
+
+Identificar automaticamente os papéis organizacionais envolvidos na oportunidade e orientar o analista quanto às responsabilidades previstas para cada etapa do processo.
+
+### Resultado Esperado
+
+- identificar os atores relevantes;
+- indicar responsáveis por cada atividade;
+- informar aprovações necessárias;
+- sugerir consultas quando aplicável;
+- contextualizar recomendações segundo a matriz RACI corporativa.
+
+### Regras Relacionadas
+
+- BR-083
+- BR-084
+- BR-085
+- BR-086
+
+### Conceitos
+
+- Actor
+- Role
+- Process Activity
+- Responsibility Matrix
+
+---
+
 ### Conceitos
 
 - Discovery Plan
@@ -407,6 +440,20 @@ Capacidades
 
 ---
 
+## US-007
+
+Como Analista de Pré-Vendas
+
+Quero que o Discovery Copilot AI identifique automaticamente os papéis envolvidos em cada etapa da oportunidade
+
+Para garantir que as atividades sejam executadas conforme a governança definida pela organização.
+
+Capacidades
+
+- CF-11
+
+---
+
 # Critérios de Aceite
 
 ## Interpretação
@@ -482,6 +529,15 @@ Capacidades
 
 ---
 
+## Papéis e Responsabilidades
+
+- identificar corretamente os participantes da atividade;
+- indicar responsáveis conforme a matriz RACI;
+- informar quando houver necessidade de aprovação;
+- sugerir participantes obrigatórios do processo.
+
+---
+
 # Definition of Done
 
 Uma capacidade funcional será considerada concluída quando:
@@ -491,6 +547,7 @@ Uma capacidade funcional será considerada concluída quando:
 - os testes forem aprovados;
 - a documentação estiver atualizada;
 - a rastreabilidade estiver preservada;
+- respeitar a matriz de responsabilidades organizacionais quando aplicável;
 - houver validação do Product Owner;
 - houver validação de um Analista de Pré-Vendas.
 
@@ -510,6 +567,7 @@ Uma capacidade funcional será considerada concluída quando:
 | CF-08 | Identificar Riscos | Risk | BR-070 e BR-071 |
 | CF-09 | Produzir Executive Summary | Executive Summary | BR-080 |
 | CF-10 | Produzir Discovery Plan | Discovery Plan | BR-080 e BR-081 |
+| CF-11 | Governança do Processo | Responsibility Matrix | BR-090 e BR-091 |
 
 ---
 
@@ -535,6 +593,7 @@ Toda nova capacidade funcional deverá:
 - utilizar os conceitos definidos no Domain Model;
 - operar sobre o Canonical Brief;
 - respeitar as Business Rules;
+- considerar a governança organizacional quando aplicável;
 - possuir User Story;
 - possuir Critérios de Aceite;
 - possuir rastreabilidade completa.

@@ -115,6 +115,25 @@ Exemplos:
 
 Os ativos poderão ser classificados por múltiplas dimensões.
 
+---
+
+## Processo
+
+Os ativos também poderão ser classificados conforme a etapa do processo de negócio.
+
+Exemplos:
+
+- Qualificação Comercial
+- Qualificação Técnica
+- Discovery
+- Arquitetura
+- Cotação
+- Precificação
+- Proposta Técnica
+- Proposta Comercial
+- Contrato
+- Pós-Venda
+
 ## Área
 
 - Comercial
@@ -181,6 +200,16 @@ Todo ativo deverá possuir, no mínimo:
 - origem;
 - nível de confidencialidade.
 
+## Metadados Adicionais
+
+Os ativos poderão possuir metadados relacionados ao processo corporativo, incluindo:
+
+- etapa do processo;
+- papéis envolvidos;
+- atividades relacionadas;
+- responsabilidades RACI;
+- dependências entre atividades.
+
 ---
 
 # Ciclo de Vida
@@ -226,6 +255,8 @@ Durante a execução das capacidades do produto, a IA poderá:
 - utilizar conhecimento aprovado;
 - justificar recomendações;
 - enriquecer o Canonical Brief.
+
+Além do contexto técnico e de negócio, a IA poderá utilizar metadados da matriz de responsabilidades para contextualizar recomendações, identificar participantes obrigatórios e sugerir validações conforme a etapa do processo.
 
 A IA nunca altera diretamente a Knowledge Base.
 

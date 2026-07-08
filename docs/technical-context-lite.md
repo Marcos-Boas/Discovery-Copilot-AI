@@ -17,8 +17,8 @@
 - **Validação de Dados:** Todo dado trafegado na API do backend deve ser validado estritamente usando Schemas do Pydantic, espelhando os campos obrigatórios do [canonical-brief.md](file:///c:/Users/marco/OneDrive/Área de Trabalho/pulse mais/onion-portable/onion-mini/docs/product/canonical-brief.md).
 - **Gotchas (Armadilhas):**
   - O SDK do Gemini (`google-genai`) requer `GEMINI_API_KEY` no ambiente (carregada via `start.ps1` ou `.env`). Validado em e2e real em 2026-07-06 (15/15 checks, ~20s create + ~27s enrich).
-  - `start.ps1` carrega `.env` e valida `GEMINI_API_KEY`, mas o frontend (`site/copilot/app.js`) hardcoda `http://localhost:8000` — usar `-Port` quebra a UI sem ajuste manual.
-  - Fontes `site/fonts/fraunces-var.woff2` referenciadas em `site/index.html` e `site/copilot/index.html` não existem no repo (404 em runtime).
+  - Frontend (`site/copilot/app.js`) agora detecta `window.location.origin` dinamicamente para API_BASE, mas fallback para `localhost:8000` pode quebrar em portas customizadas.
+  - Fontes `site/fonts/fraunces-var.woff2` e `fraunces-italic-var.woff2` existem no repo e são carregadas corretamente.
   - Evitar complexidades de transpiladores no frontend (como TypeScript ou Babel) para manter o desenvolvimento ágil, limpo e direto no navegador.
 
 ## 3. Arquitetura & Mapa do Código
@@ -108,11 +108,12 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 > Prioridade derivada da engenharia reversa código ↔ docs. Referencia RFs em [traceability.md](./product/traceability.md).
 
 *   [x] **Corrigir `GEMINI_API_KEY` em `ai.py`** — trocar env var incorreta por `"GEMINI_API_KEY"` (RF-002, RF-009–RF-015) -- **Feito** *(e2e 15/15 em 2026-07-06)*
-*   [ ] **Tornar `API_BASE` dinâmico no frontend** — derivar de `window.location` ou config injetada (RNF-006) -- **A Fazer**
-*   [ ] **Corrigir busca KB multi-termo** — query `"term1 OR term2"` não funciona com `LIKE` único em `kb.py` (RF-009) -- **A Fazer**
+*   [x] **Tornar `API_BASE` dinâmico no frontend** — implementado em `app.js` linha 3 com fallback para localhost (RNF-006) -- **Feito**
+*   [x] **Adicionar fontes em `site/fonts/`** — fontes `fraunces-var.woff2` e `fraunces-italic-var.woff2` presentes no repo -- **Feito**
+*   [x] **Corrigir busca KB multi-termo** — implementado split por " OR " e múltiplos LIKEs em `kb.py` (RF-009) -- **Feito**
+*   [x] **Edição de gaps/perguntas/riscos/premissas na UI** — substituídos por textareas editáveis com formato delimitado por "|" (RF-016) -- **Feito**
+*   [x] **Exportação de briefing** — botão de exportação Markdown implementado no frontend -- **Feito**
 *   [ ] **Upload PDF/DOCX** — implementar parsing com `pypdf`/`python-docx` já declarados (RF-001) -- **A Fazer**
-*   [ ] **Edição de gaps/perguntas/riscos/premissas na UI** — hoje são read-only (RF-016) -- **A Fazer**
-*   [ ] **Adicionar fontes em `site/fonts/`** ou remover referências quebradas -- **A Fazer**
 *   [ ] **Suite de testes automatizada** — converter `test_e2e.py` para pytest ou CI (DoD traceability) -- **A Fazer**
 *   [ ] **Status `Consolidado`/`Encerrado`** — rotas e transições de lifecycle (RF-015) -- **A Fazer**
 
@@ -131,3 +132,7 @@ A arquitetura do Discovery Copilot AI é dividida em duas camadas leves e comuni
 |---|---|---|
 | 2026-07-06 | Setup MVP / Ciclo de Engenharia 01 | Criar `.venv` antes de qualquer código; validar imports no início do ciclo para evitar problemas de permissão no Windows. |
 | 2026-07-06 | Sync código ↔ docs / Ciclo Sync 01 | Após cada ciclo de engenharia, rodar `@docs` sync antes de marcar tasks como Feito; validar env vars e e2e com chave real, não só HTTP 200. |
+| 2026-07-07 | Sync código ↔ docs / Ciclo Sync 02 | API_BASE dinâmico implementado no frontend; fontes adicionadas ao repo; atualizar gotchas e plano pós-sync. |
+| 2026-07-07 | Correção busca KB / Ciclo de Engenharia 02 | Implementado split por " OR " e múltiplos LIKEs em `kb.py` para suportar busca multi-termo (RF-009). |
+| 2026-07-07 | Edição e Exportação / Ciclo de Engenharia 03 | Campos gaps/questions/risks/assumptions agora editáveis via textareas com formato delimitado; exportação Markdown implementada. |
+| 2026-07-07 | UI/UX Premium / Ciclo de Engenharia 04 | Design system premium implementado: gradientes, glassmorphism, sombras em camadas, animações suaves, responsividade mobile. |

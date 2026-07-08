@@ -1,0 +1,159 @@
+{
+  "version": "2.0.0",
+  "context_version": 1,
+  "opportunity": {
+    "id": "OPP-F71F9B",
+    "title": "Evolução de Visibilidade de Infraestrutura e Redução de Indisponibilidades - Energia Verde",
+    "source": "Briefing exemplo ClearIT",
+    "created_at": "2023-10-27T10:00:00Z",
+    "status": "Inicial"
+  },
+  "customer": {
+    "name": "Energia Verde",
+    "segment": "Energia",
+    "contact_person": "Carlos Mota"
+  },
+  "stakeholders": [
+    {
+      "name": "Carlos Mota",
+      "role": "Infraestrutura",
+      "contact": null
+    }
+  ],
+  "business_context": {
+    "problems": [
+      "Monitoramento básico de equipamentos de rede",
+      "Tempo gasto para identificar a causa de indisponibilidades"
+    ],
+    "objectives": [
+      "Evoluir a visibilidade da infraestrutura",
+      "Reduzir o tempo gasto para identificar a causa de indisponibilidades"
+    ],
+    "motivations": [
+      "Melhorar a gestão de infraestrutura e disponibilidade de serviços"
+    ]
+  },
+  "current_scenario": {
+    "description": "O cliente utiliza SolarWinds apenas para monitoramento básico de equipamentos de rede.",
+    "key_points": [
+      "Uso de SolarWinds para monitoramento básico de rede"
+    ]
+  },
+  "desired_scenario": {
+    "description": "O cliente deseja evoluir a visibilidade da infraestrutura e reduzir o tempo gasto para identificar a causa de indisponibilidades.",
+    "key_points": [
+      "Maior visibilidade da infraestrutura",
+      "Redução do MTTR (Mean Time To Resolution) para indisponibilidades"
+    ]
+  },
+  "scope": {
+    "included": [
+      "Melhoria da visibilidade da infraestrutura",
+      "Otimização da identificação de causa raiz de indisponibilidades"
+    ],
+    "excluded": []
+  },
+  "technologies": [
+    "SolarWinds"
+  ],
+  "constraints": [],
+  "assumptions": [],
+  "risks": [],
+  "missing_information": [
+    {
+      "id": "GAP-01",
+      "description": "Detalhes sobre a infraestrutura atual (tamanho, complexidade, tipos de equipamentos).",
+      "area": "Técnica",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-02",
+      "description": "Ferramentas de monitoramento adicionais ou processos existentes.",
+      "area": "Técnica",
+      "priority": "Média"
+    },
+    {
+      "id": "GAP-03",
+      "description": "Orçamento e cronograma esperados para o projeto.",
+      "area": "Comercial",
+      "priority": "Alta"
+    },
+    {
+      "id": "GAP-04",
+      "description": "Quais são os KPIs atuais de indisponibilidade e visibilidade.",
+      "area": "Negócio",
+      "priority": "Média"
+    }
+  ],
+  "questions": [
+    {
+      "id": "QST-01",
+      "question": "Quais são os principais desafios que vocês enfrentam atualmente com o monitoramento da infraestrutura além do básico?",
+      "type": "Obrigatória",
+      "target_role": "Infraestrutura",
+      "context": "Entender a profundidade dos problemas."
+    },
+    {
+      "id": "QST-02",
+      "question": "Poderia detalhar quais tipos de equipamentos e serviços compõem a infraestrutura que desejam monitorar com maior visibilidade?",
+      "type": "Técnica",
+      "target_role": "Infraestrutura",
+      "context": "Mapear o escopo técnico."
+    },
+    {
+      "id": "QST-03",
+      "question": "Qual o impacto atual das indisponibilidades no negócio e qual a meta de redução do tempo de identificação de causa?",
+      "type": "Contexto",
+      "target_role": "Infraestrutura",
+      "context": "Quantificar o valor da solução."
+    },
+    {
+      "id": "QST-04",
+      "question": "Existem outras ferramentas de monitoramento ou processos de gestão de incidentes em uso atualmente?",
+      "type": "Técnica",
+      "target_role": "Infraestrutura",
+      "context": "Entender o ambiente existente."
+    },
+    {
+      "id": "QST-05",
+      "question": "Qual o orçamento e o cronograma previstos para este projeto?",
+      "type": "Comercial",
+      "target_role": "Infraestrutura",
+      "context": "Alinhar expectativas comerciais."
+    }
+  ],
+  "executive_summary": "A oportunidade com a Energia Verde, cliente de grande porte em Florianópolis/SC, foca na evolução da visibilidade da infraestrutura e na redução do tempo de identificação de indisponibilidades. Atualmente, utilizam SolarWinds para monitoramento básico de rede. O contato principal é Carlos Mota, da área de Infraestrutura. Há um claro interesse em avançar para uma reunião técnica para explorar soluções que enderecem a necessidade de maior visibilidade e eficiência operacional.",
+  "discovery_plan": {
+    "steps": [
+      "Apresentação da equipe e alinhamento de agenda",
+      "Entendimento aprofundado do cenário atual de monitoramento e desafios",
+      "Discussão sobre os objetivos de visibilidade e redução de indisponibilidades",
+      "Exploração das tecnologias e processos existentes",
+      "Apresentação de possíveis abordagens e soluções",
+      "Definição dos próximos passos e expectativas"
+    ],
+    "methodology": "Entrevista semi-estruturada com foco em problemas e objetivos de negócio, seguida de exploração técnica.",
+    "validation_metrics": [
+      "Confirmação dos problemas e objetivos",
+      "Identificação de requisitos técnicos chave",
+      "Alinhamento de expectativas para a próxima fase"
+    ]
+  },
+  "references": [
+    {
+      "id": "REF-01",
+      "type": "Briefing",
+      "source": "CASE 08 - Energia Verde",
+      "timestamp": "2023-10-27T10:00:00Z"
+    }
+  ],
+  "history": [
+    {
+      "version": 1,
+      "date": "2026-07-08T01:24:25.405229",
+      "author": "IA Copilot",
+      "changes_summary": "Leitura e interpretação inicial de oportunidade a partir do documento bruto."
+    }
+  ],
+  "confidence_level": "Médio"
+}

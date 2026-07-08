@@ -210,6 +210,69 @@ Representar um conteúdo oficial reutilizável.
 
 ---
 
+---
+
+## Actor
+
+### Responsabilidade
+
+Representar pessoas ou áreas participantes do processo comercial e de pré-vendas.
+
+### Exemplos
+
+- Vendedor
+- Analista de Pré-Vendas
+- BDM
+- Diretoria Comercial
+- Diretoria de Pré-Vendas
+- Price Manager
+- Pós-Venda
+- Fabricante
+
+---
+
+## Role
+
+### Responsabilidade
+
+Representar o papel exercido por um Actor dentro de uma atividade do processo.
+
+Um mesmo Actor poderá exercer diferentes papéis dependendo da atividade.
+
+---
+
+## Process Activity
+
+### Responsabilidade
+
+Representar uma atividade executada durante o ciclo de vida da oportunidade.
+
+### Exemplos
+
+- Qualificação Comercial
+- Qualificação Técnica
+- Discovery
+- Cotação
+- Precificação
+- Proposta Técnica
+- Proposta Comercial
+
+---
+
+## Responsibility Matrix
+
+### Responsabilidade
+
+Representar a relação entre Process Activities e Roles segundo o modelo RACI.
+
+### Relacionamentos
+
+- associa Activities a Roles;
+- define Responsible;
+- define Approver;
+- define Consulted;
+- define Informed.
+
 # Regras Estruturais
 
 - Toda Opportunity possui exatamente um Canonical Brief.
@@ -218,6 +281,9 @@ Representar um conteúdo oficial reutilizável.
 - Premises nunca substituem fatos.
 - Risks devem estar associados ao contexto da oportunidade.
 - Knowledge Assets nunca pertencem ao Canonical Brief, apenas são referenciados.
+- Toda Process Activity poderá possuir uma ou mais Roles associadas.
+- Toda Role deverá estar vinculada a um Actor.
+- A Responsibility Matrix define a participação de cada Role em cada Activity.
 
 ---
 

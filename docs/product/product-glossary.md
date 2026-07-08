@@ -182,6 +182,69 @@ Responsável pela condução do discovery e pela validação das recomendações
 
 ---
 
+---
+
+## Vendedor
+
+Responsável pela origem da oportunidade comercial e pelo relacionamento comercial com o cliente.
+
+---
+
+## BDM (Business Development Manager)
+
+Profissional responsável pelo relacionamento estratégico com fabricantes e apoio ao desenvolvimento de oportunidades.
+
+---
+
+## Price Manager
+
+Responsável pela análise, validação e aprovação da precificação das oportunidades.
+
+---
+
+## Diretoria de Pré-Vendas
+
+Área responsável pela governança técnica do processo de pré-vendas.
+
+---
+
+## Diretoria Comercial
+
+Área responsável pelas decisões comerciais estratégicas.
+
+---
+
+## Fabricante
+
+Empresa fornecedora das soluções comercializadas.
+
+Pode participar da definição técnica, homologação de soluções e negociação comercial.
+
+---
+
+## Process Activity
+
+Cada etapa executada durante o ciclo de vida de uma oportunidade.
+
+---
+
+## Role
+
+Função exercida por um participante dentro de determinada atividade.
+
+---
+
+## RACI
+
+Modelo utilizado para definir responsabilidades das atividades do processo.
+
+Responsabilidades possíveis:
+
+- Responsible (R)
+- Approver (A)
+- Consulted (C)
+- Informed (I)
+
 ## Discovery Copilot AI
 
 Agente de Inteligência Artificial que atua como copiloto do Analista de Pré-Vendas.

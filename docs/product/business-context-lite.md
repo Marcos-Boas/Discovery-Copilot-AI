@@ -287,5 +287,18 @@ Detalhes sobre fluxo operacional, conceitos do domínio, regras de negócio, com
 O Business Context Lite deve permanecer estável ao longo do projeto, sofrendo alterações apenas quando houver mudanças relevantes na estratégia, no posicionamento do produto ou nos objetivos de negócio.
 
 ---
+
+# 🔁 Redesenhos
+
+> Registro de mudanças no processo de produto derivadas de ciclos de sync e sessões.
+
+| Data | Ciclo/Feature | O que muda no próximo ciclo |
+|---|---|---|
+| 2026-07-07 | Sync código ↔ docs / Ciclo Sync 02 | Technical-context atualizado com gotchas corrigidos (API_BASE dinâmico, fontes); plano pós-sync reflete estado atual do código. |
+| 2026-07-07 | Correção busca KB / Ciclo de Engenharia 02 | Busca KB agora suporta múltiplos termos separados por " OR " (RF-009). |
+| 2026-07-07 | Edição e Exportação / Ciclo de Engenharia 03 | Todos os campos do briefing agora editáveis; exportação Markdown implementada. |
+| 2026-07-07 | UI/UX Premium / Ciclo de Engenharia 04 | Design system premium implementado com gradientes, glassmorphism e animações. |
+
+---
 > **Graduação:** ao adotar o [Sistema Onion completo](https://onionevolve.com), cada seção expande para sua camada em `docs/business-context/` — §1/§4/§5/§6 → `02-product/` · §2/§3 → `01-customer/` · §7 → convenção `[INFERIDO]` do core. Zero retrabalho.
 
